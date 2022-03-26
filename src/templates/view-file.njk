@@ -1,0 +1,95 @@
+{% extends 'base.njk' %}
+
+{% block head %}
+{% switch file_type %}
+  {% case 0 %} {# image #}
+    <meta property="og:image" content="/file/{{hash}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="/file/{{hash}}">
+  {% case 1 %} {# video #}
+    <meta name="twitter:card" content="player">
+    <meta name="twitter:player:width" content="{{width}}">
+    <meta name="twitter:player:height" content="{{height}}">
+    <meta name="twitter:player:stream" content="/file/{{hash}}">
+    <meta name="twitter:player:stream:content_type" content="{{mime}}"> 
+
+
+    <meta property="og:video" content="/file/{{hash}}">
+    <meta property="og:video:secure_url" content="/file/{{hash}}">
+    <meta property="og:video:type" content="{{mime}}">
+    <meta property="og:video:width" content="{{width}}">
+    <meta property="og:video:height" content="{{height}}">
+  {% default %}
+    <meta property="og:image" content="/file/{{hash}}">
+    {# <meta name="twitter:card" content="summary_large_image"> #}
+    <meta name="twitter:image" content="/file/{{hash}}">
+{% endswitch %}
+<style>
+
+</style>
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="flex flex-row flex-wrap">
+  <div class="w-60 break-words">
+    <h1>{{hash}}</h1>
+
+    <h2>Tags</h2>
+    <ul>
+    {% for serviceName, tags in tag_services_to_tags %}
+      <li>{{serviceName}}
+        <ul>
+          {% for tag in tags %}
+            <li class="tag-text" tag="{{tag}}">{{tag}}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% else %}
+      <li>This would display if the 'item' collection were empty</li>
+    {% endfor %}
+    </ul>
+
+    <h2>URLs</h2>
+    <ul>
+      {% for knownUrl in detailed_known_urls %}
+        <li><a href="{{knownUrl.normalised_url}}">{{knownUrl.match_name}}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="h-full flex-1 flex align items-center self-start min-w-[15rem] max-h-screen">
+    <div class="flex-1 p-1 flex self-stretch">
+
+      {% switch file_type %}
+        {% case 0 %} {# image #}
+          <div class="flex justify-center items-center w-full h-full">
+            <img class="max-h-full max-w-full h-auto w-auto inline-block m-auto" src="/file/{{hash}}">
+          </div>
+        {% case 1 %} {# video #}
+          <div class="flex justify-center items-center w-full h-full">
+            <video 
+              controls
+              loop
+              autoplay
+              poster="/thumbnail/{{hash}}"
+              src="/file/{{hash}}"
+              class="w-full h-full"
+            >
+            </video>
+          </div>
+        {% case 2 %} {# audio #}
+          <div class="text-6xl">Unsupported Filetype</div>
+        {% default %}
+          <div class="text-6xl">Unsupported Filetype</div>
+      {% endswitch %}
+
+      
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

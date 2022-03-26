@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tag-no-namespace: rgb(0, 111, 250);
+  --tag-default-namespace: rgb(114, 160, 193);
+  --tag-system: rgb(153, 101, 21);
+  --tag-meta: rgb(0, 0, 0);
+  --tag-creator: rgb(170, 0, 0);
+  --tag-studio: rgb(128, 0, 0);
+  --tag-character: rgb(0, 170, 0);
+  --tag-person: rgb(0, 128, 0);
+  --tag-series: rgb(170, 0, 170);
+}
+
+@media (prefers-color-scheme: dark) { 
+  :root {
+    --tag-no-namespace: rgb(0, 111, 250);
+    --tag-default-namespace: rgb(114, 160, 193);
+    --tag-system: rgb(153, 101, 21);
+    --tag-meta: rgb(0, 0, 0);
+    --tag-creator: rgb(170, 0, 0);
+    --tag-studio: rgb(128, 0, 0);
+    --tag-character: rgb(0, 170, 0);
+    --tag-person: rgb(0, 128, 0);
+    --tag-series: rgb(170, 0, 170);
+  }
+}
+
+@layer utilities {
+    .tag-text[tag] {
+      color: rgb(0, 111, 250);
+    }
+    .tag-text[tag*=":"] {
+      color: rgb(114, 160, 193);
+    }
+    .tag-text[tag^="system:"] {
+      color: var(--tag-system);
+    }
+    .tag-text[tag^="meta:"] {
+      color: var(--tag-meta);
+    }
+    .tag-text[tag^="meta:"] {
+      color: var(--tag-meta);
+    }
+    .tag-text[tag^="creator:"] {
+      color: var(--tag-creator);
+    }
+    .tag-text[tag^="studio:"] {
+      color: var(--tag-studio);
+    }
+    .tag-text[tag^="character:"] {
+      color: var(--tag-character);
+    }
+    .tag-text[tag^="person:"] {
+      color: var(--tag-person);
+    }
+    .tag-text[tag^="series:"] {
+      color: var(--tag-series);
+    }
+}

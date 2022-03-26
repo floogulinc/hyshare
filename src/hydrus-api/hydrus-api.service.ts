@@ -1,24 +1,17 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AxiosRequestHeaders } from '@nestjs/axios/node_modules/axios';
+import { AxiosRequestHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { map, Observable } from 'rxjs';
+import { EnvConfig } from 'src/config';
 import { HydrusFileFromAPI } from 'src/hydrus-file';
 
 @Injectable()
 export class HydrusApiService {
-  constructor(
-    private configService: ConfigService,
-    private http: HttpService,
-  ) {}
+  constructor(private envConfig: EnvConfig, private http: HttpService) {}
 
-  hydrusApiUrl: string = this.configService.get<string>(
-    'HYSHARE_HYDRUS_API_URL',
-  );
+  hydrusApiUrl: string = this.envConfig.HYSHARE_HYDRUS_API_URL;
 
-  hydrusApiKey: string = this.configService.get<string>(
-    'HYSHARE_HYDRUS_API_KEY',
-  );
+  hydrusApiKey: string = this.envConfig.HYSHARE_HYDRUS_API_KEY;
 
   apiUrl = this.hydrusApiUrl + (this.hydrusApiUrl.endsWith('/') ? '' : '/');
 
@@ -26,10 +19,15 @@ export class HydrusApiService {
     'Hydrus-Client-API-Access-Key': this.hydrusApiKey,
   };
 
-  private apiGet<T = any>(path: string, params?) {
+  private apiGet<T = any>(
+    path: string,
+    params?,
+    extraConfig?: AxiosRequestConfig,
+  ) {
     return this.http.get<T>(this.apiUrl + path, {
       params,
       headers: this.headers,
+      ...extraConfig,
     });
   }
 
@@ -126,5 +124,33 @@ export class HydrusApiService {
       '&Hydrus-Client-API-Access-Key=' +
       this.hydrusApiKey
     );
+  }
+
+  // public getThumbnailStream(hash: string) {
+  //   return this.apiGet(
+  //     'get_files/thumbnail',
+  //     { hash },
+  //     { responseType: 'stream' },
+  //   ).pipe(map((resp) => resp.data));
+  // }
+
+  public async getThumbnailStream(
+    hash: string,
+    headers?,
+  ): Promise<AxiosResponse> {
+    return this.http.axiosRef.get(this.apiUrl + 'get_files/thumbnail', {
+      responseType: 'stream',
+      params: { hash },
+      headers: { ...headers, ...this.headers },
+    });
+  }
+
+  public async getFileStream(hash: string, headers?): Promise<AxiosResponse> {
+    console.log(`file ${hash}`)
+    return this.http.axiosRef.get(this.apiUrl + 'get_files/file', {
+      responseType: 'stream',
+      params: { hash },
+      headers: { ...headers, ...this.headers },
+    });
   }
 }

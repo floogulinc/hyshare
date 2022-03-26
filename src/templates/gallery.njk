@@ -1,0 +1,30 @@
+{% extends 'base.njk' %}
+
+{% block body %}
+
+{# <ul>
+{% for hash in hashes %}
+  <li><a href="/view/{{hash}}"><img src="/thumbnail/{{hash}}"></a></li>
+{% else %}
+  <li>This would display if the 'item' collection were empty</li>
+{% endfor %}
+</ul> #}
+
+<div class="container mx-auto my-8">
+<h1 class="text-4xl mb-4">{{tag | escape }}</h1>
+
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-3 mx-auto">
+  {% for hash in hashes %}
+    <a href="/view/{{hash}}">
+          <img 
+            src="/thumbnail/{{hash}}" 
+            class="object-cover w-full h-full aspect-square rounded-xl"
+            loading="lazy"
+          >
+    </a>
+  {% endfor %}
+</div>
+
+</div>
+
+{% endblock %}
