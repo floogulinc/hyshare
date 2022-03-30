@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AxiosRequestHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { map, Observable } from 'rxjs';
 import { EnvConfig } from 'src/config';
@@ -8,6 +8,8 @@ import { HydrusFileFromAPI } from 'src/hydrus-file';
 @Injectable()
 export class HydrusApiService {
   constructor(private envConfig: EnvConfig, private http: HttpService) {}
+
+  private readonly logger = new Logger(HydrusApiService.name);
 
   hydrusApiUrl: string = this.envConfig.HYSHARE_HYDRUS_API_URL;
 
@@ -53,6 +55,7 @@ export class HydrusApiService {
   ): Hashes extends true
     ? Observable<{ hashes: string[] }>
     : Observable<{ file_ids: number[] }> {
+    //this.logger.debug(`getFileMetadata: ${tags}`);
     return this.apiGet('get_files/search_files', {
       tags: JSON.stringify(tags),
       ...params,
@@ -81,11 +84,13 @@ export class HydrusApiService {
   ): Observable<{ metadata: HydrusFileFromAPI[] }> {
     let newParams;
     if ('hashes' in params) {
+      //this.logger.debug(`getFileMetadata ${params.hashes}`);
       newParams = {
         ...params,
         hashes: JSON.stringify(params.hashes),
       };
     } else {
+      //this.logger.debug(`getFileMetadata ${params.file_ids}`);
       newParams = {
         ...params,
         file_ids: JSON.stringify(params.file_ids),
@@ -138,6 +143,7 @@ export class HydrusApiService {
     hash: string,
     headers?,
   ): Promise<AxiosResponse> {
+    //this.logger.debug(`getThumbnailStream ${hash}`);
     return this.http.axiosRef.get(this.apiUrl + 'get_files/thumbnail', {
       responseType: 'stream',
       params: { hash },
@@ -146,7 +152,7 @@ export class HydrusApiService {
   }
 
   public async getFileStream(hash: string, headers?): Promise<AxiosResponse> {
-    console.log(`file ${hash}`)
+    //this.logger.debug(`getFileStream ${hash}`);
     return this.http.axiosRef.get(this.apiUrl + 'get_files/file', {
       responseType: 'stream',
       params: { hash },

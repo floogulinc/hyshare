@@ -1,16 +1,21 @@
 import { HttpModule } from '@nestjs/axios';
-import { CacheModule, Module } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { GalleryController } from './gallery/gallery.controller';
 import { ViewFileController } from './view-file/view-file.controller';
 import { dotenvLoader, fileLoader, TypedConfigModule } from 'nest-typed-config';
 import { AppConfig, EnvConfig } from './config';
+import { LoggerMiddleware } from './logger.middleware';
 
 @Module({
   imports: [
-
     TypedConfigModule.forRoot({
       schema: EnvConfig,
       load: [
@@ -22,7 +27,13 @@ import { AppConfig, EnvConfig } from './config';
         }),
       ],
       normalize(config) {
-        config.PORT = parseInt(config.PORT, 10);
+        if (config.HYSHARE_LOG_REQUESTS) {
+          config.HYSHARE_LOG_REQUESTS =
+            config.HYSHARE_LOG_REQUESTS?.toLowerCase() === 'true';
+        }
+        if (config.HYSHARE_CACHE_TTL) {
+          config.HYSHARE_CACHE_TTL = parseInt(config.HYSHARE_CACHE_TTL, 10);
+        }
         return config;
       },
     }),
@@ -31,14 +42,30 @@ import { AppConfig, EnvConfig } from './config';
       load: [
         fileLoader({
           /* options */
-          basename: '.hyshare'
+          basename: '.hyshare',
         }),
       ],
     }),
     HttpModule,
-    CacheModule.register()
+    CacheModule.registerAsync({
+      imports: [AppModule],
+      useFactory: async (env: EnvConfig) => ({
+        ttl: env.HYSHARE_CACHE_TTL,
+      }),
+      inject: [EnvConfig],
+    }),
   ],
   controllers: [AppController, GalleryController, ViewFileController],
-  providers: [AppService, HydrusApiService],
+  providers: [HydrusApiService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor(private env: EnvConfig) {}
+  configure(consumer: MiddlewareConsumer) {
+    if (this.env.HYSHARE_LOG_REQUESTS) {
+      consumer.apply(LoggerMiddleware).forRoutes({
+        path: '*',
+        method: RequestMethod.ALL,
+      });
+    }
+  }
+}

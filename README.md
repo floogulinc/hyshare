@@ -1,30 +1,12 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+hyshare
+=========
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Share galleries and files from Hydrus on the web
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[![Version](https://img.shields.io/npm/v/hyshare.svg)](https://npmjs.org/package/hyshare)
+[![Downloads/week](https://img.shields.io/npm/dw/hyshare.svg)](https://npmjs.org/package/hyshare)
+[![License](https://img.shields.io/npm/l/hyshare.svg)](https://github.com/floogulinc/hyshare/blob/master/package.json)
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
 
@@ -45,29 +27,45 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Configuration
 
-```bash
-# unit tests
-$ npm run test
+hyshare has two sets of configuration items. The environment config and app config.
 
-# e2e tests
-$ npm run test:e2e
+### Environment Config
 
-# test coverage
-$ npm run test:cov
-```
+The environment config is loaded from environment variables and optionally a `.env` file (using [dotenv](https://www.npmjs.com/package/dotenv)).
 
-## Support
+Here are all the environment config items (they are optional unless stated otherwise):
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Config Item | Default Value | Description |
+|----|----|----|
+| `HYSHARE_PORT` | `3000` | The port to serve hyshare on. |
+| `HYSHARE_HYDRUS_API_URL` | `http://localhost:45869/` | The URL to your Hydrus client API. |
+| `HYSHARE_HYDRUS_API_KEY` |  | (**required**) an access key for the Hydrus API. It should have the "search for files" permission enabled. |
+| `HYSHARE_LOG_REQUESTS` | `false` | Whether hyshare should log each request to the console. |
+| `HYSHARE_CACHE_TTL` | `60` | The length of time in minutes hyshare should cache responses. |
+| `HYSHARE_BASE_URL` |  | The base URL hyshare is served on. Used for twitter embed meta tags that require an absolute URL. |
+| `NODE_ENV` | `production` | (development only) The environment type hyshare is running in (set to `development` to have nunjucks watch for changes to the templates). |
 
-## Stay in touch
+### App Config
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The app config is loaded from a JSON, YAML, or JS file using [cosmicconfig](https://github.com/davidtheclark/cosmiconfig). It looks for a file called `.hyshare.json` (could also be `.yml` for example) starting in the hyshare project directory and moving up until it hits your home directory. This means you can put `.hyshare.json` in your home folder.
 
-## License
+Here are the app config items (they are all optional):
 
-Nest is [MIT licensed](LICENSE).
+| Config Item | Default Value | Description |
+|----|----|----|
+| `searchTags` | `[]` | An array of tags to add to each gallery search. Refer to the [Hydrus API docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for what can be used here. |
+| `searchPrefix` | `hyshare:` | The prefix to add to the requested gallery name. This can be blank, which will simply search verbatim for the tag `/gallery/{tag}`. |
+| `hiddenTags` | `[]` | An array of tags to hide in the file view. |
+| `hiddenNamespaces` | `["hyshare"]` | An array of namespaces to hide in the file view. |
+| `tagServiceToSearch` | | The tag service name to use for the gallery search. By default this searches all tag services. It is recommended to use a tag service that is not a public tag repo (eg the PTR) and is not effected by public tag repo siblings and parents. If the tag service used can be effected by PTR parents or siblings someone could potentially sibling or parent a `hyshare:` tag to something else and expose your files. |
+| `tagServicesToDisplay` | `["all known tags"]` | An array of tag service names to display in the file view |
+| `showNotes` | `true` | A boolean indicating whether to show notes on the file view |
+| `showUrls` | `true` | A boolean indicating whether to show known URLs on the file view |
+| `embedTitle` | `true` | A boolean indicating whether to include the title of the file in embed metadata tags (for example for Discord embeds) |
+| `titleFromNamespace` | `true` | A boolean indicating whether to try to determine a title for the file from the first tag with a title namespace, configured below. If this is `false` or no title tag is found it falls back to "Image File" for example. |
+| `titleNamespace` | `title` | The namespace to use to determine a file's title. |
+| `fullThumbs` | `false` | A boolean indicating whether to show full thumbnails in the gallery view. If set to `false` thumbnails will be cropped in to fill the entire square. |
+| `noRounded` | `false` | A boolean indicating whether to disable rounded corners on various UI elements including thumbnails and buttons. |
+| `blackDarkTheme` | `false` | A boolean indicating whether to use a more pure-black dark theme. |

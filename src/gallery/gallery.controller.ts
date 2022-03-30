@@ -1,15 +1,24 @@
 import {
   CacheInterceptor,
-  CacheTTL,
   Controller,
   Get,
+  Header,
   Param,
   Render,
   UseInterceptors,
 } from '@nestjs/common';
+import { IsNotEmpty, IsString, NotContains } from 'class-validator';
+import ms from 'ms';
 import { map } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
+
+class GalleryParams {
+  @IsNotEmpty()
+  @IsString()
+  @NotContains('*')
+  tag: string;
+}
 
 @Controller('gallery')
 export class GalleryController {
@@ -18,29 +27,29 @@ export class GalleryController {
     private appConfig: AppConfig,
   ) {}
 
-  namespace = 'hyshare';
-
   getHashes(tag: string) {
     return this.hydrusApiService
-      .searchFiles([`${this.namespace}:${tag}`, ...this.appConfig.searchTags], {
-        return_hashes: true,
-        tag_service_name: this.appConfig.tagServiceToSearch,
-      })
-      .pipe(map(({ hashes }) => ({ hashes, tag })));
+      .searchFiles(
+        [`${this.appConfig.searchPrefix}${tag}`, ...this.appConfig.searchTags],
+        {
+          return_hashes: true,
+          tag_service_name: this.appConfig.tagServiceToSearch,
+        },
+      )
+      .pipe(map(({ hashes }) => ({ hashes, title: tag })));
   }
 
   @Get(':tag')
-  @CacheTTL(60)
   @UseInterceptors(CacheInterceptor)
+  @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('gallery')
-  getGallery(@Param('tag') tag: string) {
-    return this.getHashes(tag);
+  getGallery(@Param() params: GalleryParams) {
+    return this.getHashes(params.tag);
   }
 
   @Get(':tag/data.json')
-  @CacheTTL(60)
   @UseInterceptors(CacheInterceptor)
-  getGalleryData(@Param('tag') tag: string) {
-    return this.getHashes(tag);
+  getGalleryData(@Param() params: GalleryParams) {
+    return this.getHashes(params.tag);
   }
 }

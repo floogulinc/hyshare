@@ -52,10 +52,11 @@ export interface HydrusFileFromAPI {
 
 export enum HydrusFileType {
   Image = 0,
-  Video,
-  Audio,
-  Flash,
-  Unsupported,
+  Video = 1,
+  Audio = 2,
+  Flash = 3,
+  PDF = 4,
+  Unsupported = 99,
 }
 
 export enum TagStatus {
@@ -99,6 +100,9 @@ export function type(mime: string): HydrusFileType {
   }
   if (['video/x-flv', 'application/x-shockwave-flash'].includes(mime)) {
     return HydrusFileType.Flash;
+  }
+  if (['application/pdf'].includes(mime)) {
+    return HydrusFileType.PDF;
   }
   return HydrusFileType.Unsupported;
 }

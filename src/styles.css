@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html[no-rounded] {
+  --rounded-box: 0;
+  --rounded-btn: 0;
+  --rounded-badge: 0;
+}
+
 :root {
   --tag-no-namespace: rgb(0, 111, 250);
   --tag-default-namespace: rgb(114, 160, 193);
@@ -29,34 +35,63 @@
 }
 
 @layer utilities {
-    .tag-text[tag] {
-      color: rgb(0, 111, 250);
-    }
-    .tag-text[tag*=":"] {
-      color: rgb(114, 160, 193);
-    }
-    .tag-text[tag^="system:"] {
-      color: var(--tag-system);
-    }
-    .tag-text[tag^="meta:"] {
-      color: var(--tag-meta);
-    }
-    .tag-text[tag^="meta:"] {
-      color: var(--tag-meta);
-    }
-    .tag-text[tag^="creator:"] {
-      color: var(--tag-creator);
-    }
-    .tag-text[tag^="studio:"] {
-      color: var(--tag-studio);
-    }
-    .tag-text[tag^="character:"] {
-      color: var(--tag-character);
-    }
-    .tag-text[tag^="person:"] {
-      color: var(--tag-person);
-    }
-    .tag-text[tag^="series:"] {
-      color: var(--tag-series);
-    }
+  .tag-text[tag] {
+    color: var(--tag-no-namespace);
+  }
+  .tag-text[tag*=":"] {
+    color: var(--tag-default-namespace);
+  }
+  .tag-text[tag^="system:"] {
+    color: var(--tag-system);
+  }
+  .tag-text[tag^="meta:"] {
+    color: var(--tag-meta);
+  }
+  .tag-text[tag^="meta:"] {
+    color: var(--tag-meta);
+  }
+  .tag-text[tag^="creator:"] {
+    color: var(--tag-creator);
+  }
+  .tag-text[tag^="studio:"] {
+    color: var(--tag-studio);
+  }
+  .tag-text[tag^="character:"] {
+    color: var(--tag-character);
+  }
+  .tag-text[tag^="person:"] {
+    color: var(--tag-person);
+  }
+  .tag-text[tag^="series:"] {
+    color: var(--tag-series);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html[dark-theme="black"] {
+    --p: 0 2% 20%;
+    --pf: 0 2% 16%;
+    --sf: 0 2% 16%;
+    --af: 0 2% 16%;
+    --bc: 0 0% 80%;
+    --pc: 0 5% 84%;
+    --sc: 0 5% 84%;
+    --ac: 0 5% 84%;
+    --nc: 0 3% 83%;
+    --inc: 240 100% 90%;
+    --suc: 120 100% 85%;
+    --wac: 60 100% 10%;
+    --erc: 0 100% 90%;
+    --s: 0 2% 20%;
+    --a: 0 2% 20%;
+    --b1: 0 0% 0%;
+    --b2: 0 0% 5%;
+    --b3: 0 2% 10%;
+    --n: 0 1% 15%;
+    --nf: 0 2% 20%;
+    --in: 240 100% 50%;
+    --su: 120 100% 25%;
+    --wa: 60 100% 50%;
+    --er: 0 100% 50%;
+  }
 }

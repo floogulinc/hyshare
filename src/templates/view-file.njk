@@ -1,95 +1,191 @@
 {% extends 'base.njk' %}
 
 {% block head %}
-{% switch file_type %}
-  {% case 0 %} {# image #}
-    <meta property="og:image" content="/file/{{hash}}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="/file/{{hash}}">
-  {% case 1 %} {# video #}
-    <meta name="twitter:card" content="player">
-    <meta name="twitter:player:width" content="{{width}}">
-    <meta name="twitter:player:height" content="{{height}}">
-    <meta name="twitter:player:stream" content="/file/{{hash}}">
-    <meta name="twitter:player:stream:content_type" content="{{mime}}"> 
 
+  <meta property="og:url" content="{{base_url}}/view/{{hash}}">
 
-    <meta property="og:video" content="/file/{{hash}}">
-    <meta property="og:video:secure_url" content="/file/{{hash}}">
-    <meta property="og:video:type" content="{{mime}}">
-    <meta property="og:video:width" content="{{width}}">
-    <meta property="og:video:height" content="{{height}}">
-  {% default %}
-    <meta property="og:image" content="/file/{{hash}}">
-    {# <meta name="twitter:card" content="summary_large_image"> #}
-    <meta name="twitter:image" content="/file/{{hash}}">
-{% endswitch %}
-<style>
+  {% switch file_type %}
+    {% case 0 %}{# image #}
+      <meta property="og:image" content="{{base_url}}/file/{{hash}}">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:image" content="{{base_url}}/file/{{hash}}">
 
-</style>
+      <meta property="og:image:height" content="{{height}}"/>
+      <meta property="og:image:width" content="{{width}}"/>
+
+    {# <meta property="og:title" content="test"> #}
+    {% case 1 %}{# video #}
+      <meta name="twitter:card" content="player">
+
+      <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
+
+      <meta name="twitter:player:width" content="{{width}}">
+      <meta name="twitter:player:height" content="{{height}}">
+      <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
+      <meta name="twitter:player:stream:content_type" content="{{mime}}">
+
+      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+
+      <meta property="og:video" content="{{base_url}}/file/{{hash}}">
+      <meta property="og:video:type" content="{{mime}}">
+      <meta property="og:video:width" content="{{width}}">
+      <meta property="og:video:height" content="{{height}}">
+
+      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+      {% case 2 %}{# audio #}
+
+      <meta name="twitter:card" content="player">
+      <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
+
+      <meta name="twitter:player:width" content="100">
+      <meta name="twitter:player:height" content="100">
+      <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
+      <meta name="twitter:player:stream:content_type" content="{{mime}}">
+
+      <meta property="og:audio" content="{{base_url}}/file/{{hash}}">
+      <meta property="og:audio:type" content="{{mime}}">
+
+      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+      <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+      {% default %}
+      <meta name="twitter:card" content="summary">
+      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+      <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+  {% endswitch %}
 
 {% endblock %}
 
 {% block body %}
 
+<div class="px-4 grow flex">
+  <div class="flex gap-x-4 flex-wrap-reverse grow">
+    <div class="flex-auto w-72 flex flex-col my-4">
+      <div class="card bg-base-300 compact">
+        <div class="card-body">
+          <h1 class="card-title">{{title}}</h1>
 
-<div class="flex flex-row flex-wrap">
-  <div class="w-60 break-words">
-    <h1>{{hash}}</h1>
-
-    <h2>Tags</h2>
-    <ul>
-    {% for serviceName, tags in tag_services_to_tags %}
-      <li>{{serviceName}}
-        <ul>
-          {% for tag in tags %}
-            <li class="tag-text" tag="{{tag}}">{{tag}}</li>
-          {% endfor %}
-        </ul>
-      </li>
-    {% else %}
-      <li>This would display if the 'item' collection were empty</li>
-    {% endfor %}
-    </ul>
-
-    <h2>URLs</h2>
-    <ul>
-      {% for knownUrl in detailed_known_urls %}
-        <li><a href="{{knownUrl.normalised_url}}">{{knownUrl.match_name}}</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <div class="h-full flex-1 flex align items-center self-start min-w-[15rem] max-h-screen">
-    <div class="flex-1 p-1 flex self-stretch">
-
-      {% switch file_type %}
-        {% case 0 %} {# image #}
-          <div class="flex justify-center items-center w-full h-full">
-            <img class="max-h-full max-w-full h-auto w-auto inline-block m-auto" src="/file/{{hash}}">
+          <div>
+            <div>Type: {{mime}}</div>
+            {% if width and height %}
+            <div>Dimensions: {{width}}x{{height}}</div>
+            {% endif %}
+            <div>Size: {{size|bytesize({ units: 'iec' }) }}</div>
+            {% if time_imported %}
+            <div>Imported <time datetime="{{time_imported.toISOString()}}" title="{{time_imported.toISOString()}}">{{time_imported | distancetonow({addSuffix: true})}}</time></div>
+            {% endif %}
           </div>
-        {% case 1 %} {# video #}
-          <div class="flex justify-center items-center w-full h-full">
-            <video 
-              controls
-              loop
-              autoplay
-              poster="/thumbnail/{{hash}}"
+
+          <div class="">
+            <a class="btn btn-square btn-outline" href="/file/{{hash}}" download title="Download file">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a class="btn btn-square btn-outline" href="/file/{{hash}}" target="_blank" title="Open in new tab">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+              </svg>
+            </a>
+          </div>
+
+          <div>
+            {% for knownUrl in detailed_known_urls %}
+              {% if loop.first %}
+                <h2 class="font-medium">Known URLs</h2>
+                <ul>
+              {% endif %}
+              <li><a class="link" href="{{knownUrl.normalised_url}}" target="_blank" rel="noopener noreferrer">{{knownUrl.match_name}}</a></li>
+              {% if loop.last %}
+                </ul>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <div>
+            {% for name, note in notes %}
+              {% if loop.first %}
+                <h2 class="font-medium">Notes</h2>
+                <ul>
+              {% endif %}
+              <li><label for="notes-{{loop.index}}" class="link modal-button">{{name}}</label></li>
+              {% if loop.last %}
+                </ul>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <div>
+            {% for serviceName, tags in tag_services_to_tags %}
+              {% if loop.first %}<h2 class="font-medium">Tags</h2>{% endif %}
+              <h3 class="font-medium">{{serviceName}}</h3>
+              <ul>
+                {% for tag in tags %}
+                  <li class="tag-text" tag="{{tag}}">{{tag}}</li>
+                {% endfor %}
+              </ul>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="flex-[999] flex flex-col min-w-[50%]">
+      <div class="flex w-full h-full max-h-screen">
+        {% switch file_type %}
+          {% case 0 %} {# image #}
+            <img 
+              class="max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4 rounded-xl" 
               src="/file/{{hash}}"
-              class="w-full h-full"
+              height="{{height}}"
+              width="{{width}}"
             >
-            </video>
-          </div>
-        {% case 2 %} {# audio #}
-          <div class="text-6xl">Unsupported Filetype</div>
-        {% default %}
-          <div class="text-6xl">Unsupported Filetype</div>
-      {% endswitch %}
-
-      
+          {% case 1 %} {# video #}
+            <video 
+                controls
+                loop
+                poster="/thumbnail/{{hash}}"
+                src="/file/{{hash}}"
+                type="{{mime}}"
+                height="{{height}}"
+                width="{{width}}"
+                class="inline-block mt-0 m-auto py-4"
+              ></video>
+          {% case 2 %} {# audio #}
+              <audio
+                controls
+                src="/file/{{hash}}"
+                type="{{mime}}"
+                class="inline-block w-full px-12 m-auto"
+              ></audio>
+          {% case 4 %} {# pdf #}
+            <embed
+              class="inline-block w-full py-4 min-h-[80vh]" 
+              src="/file/{{hash}}#navpanes=0" 
+              type="{{mime}}">
+            </embed>
+          {% default %}
+            <div class="text-6xl">Unsupported Filetype</div>
+        {% endswitch %}
+      </div>
     </div>
   </div>
 </div>
+
+{% endblock %}
+
+{% block endbody %}
+
+{% for name, note in notes %}
+  <input type="checkbox" id="notes-{{loop.index}}" class="modal-toggle">
+  <div class="modal">
+    <div class="modal-box relative">
+      <label for="notes-{{loop.index}}" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+      <h3 class="text-lg font-bold">{{name}}</h3>
+      <p class="py-4">{{note}}</p>
+    </div>
+  </div>
+{% endfor %}
 
 
 {% endblock %}
