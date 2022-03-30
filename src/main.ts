@@ -39,7 +39,7 @@ async function bootstrap() {
   const assets = join(__dirname, '.', 'assets'); // Directory with static HTML/CSS/JS/other files
   const views = join(__dirname, '.', 'templates'); // Directory with *.njk templates
 
-  const nunjucksEnv = nunjucks.configure(views, { express, watch: dev });
+  const nunjucksEnv = nunjucks.configure(views, { express, watch: dev, noCache: dev });
   nunjucksEnv
     .addFilter('bytesize', byteSize)
     .addFilter('distancetonow', formatDistanceToNow)

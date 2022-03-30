@@ -42,7 +42,10 @@ export class AppController {
       params.hash,
       req.headers,
     );
-    res.status(thumb.status).header(thumb.headers);
+    res
+      .status(thumb.status)
+      .header(thumb.headers)
+      .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
     thumb.data.pipe(res);
   }
 
@@ -52,11 +55,14 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const thumb = await this.hydrusApiService.getFileStream(
+    const file = await this.hydrusApiService.getFileStream(
       params.hash,
       req.headers,
     );
-    res.status(thumb.status).header(thumb.headers);
-    thumb.data.pipe(res);
+    res
+      .status(file.status)
+      .header(file.headers)
+      .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
+    file.data.pipe(res);
   }
 }

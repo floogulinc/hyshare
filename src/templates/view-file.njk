@@ -137,7 +137,7 @@
         {% switch file_type %}
           {% case 0 %} {# image #}
             <img 
-              class="max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4 rounded-xl" 
+              class="object-contain max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4" 
               src="/file/{{hash}}"
               height="{{height}}"
               width="{{width}}"
@@ -151,7 +151,7 @@
                 type="{{mime}}"
                 height="{{height}}"
                 width="{{width}}"
-                class="inline-block mt-0 m-auto py-4"
+                class="inline-block mt-0 m-auto py-4 max-h-full"
               ></video>
           {% case 2 %} {# audio #}
               <audio
@@ -167,7 +167,18 @@
               type="{{mime}}">
             </embed>
           {% default %}
-            <div class="text-6xl">Unsupported Filetype</div>
+          
+              <div class="hero h-full w-full">
+                <div class="hero-content flex-col">
+                  <div class="card">
+                    <img src="/thumbnail/{{hash}}" class="" />
+                  </div>
+                  <div>
+                    <h1 class="sm:text-5xl font-bold text-3xl text-center">Unsupported Filetype</h1>
+                  </div>
+                </div>
+              </div>
+
         {% endswitch %}
       </div>
     </div>
