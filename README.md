@@ -10,13 +10,33 @@ Share galleries and files from Hydrus on the web
 
 ## Installation
 
-```bash
+### NPM
+```sh-session
+$ npm install -g hyshare
+```
+
+### Docker
+A Docker image is published [here](https://github.com/floogulinc/hyshare/pkgs/container/hyshare)
+
+### Running from source
+```sh-session
 $ npm install
 ```
 
 ## Running the app
 
-```bash
+### NPM
+```sh-session
+$ hyshare
+```
+
+### Docker
+```sh-session
+$ docker run -p 3000:3000 ghcr.io/floogulinc/hyshare
+```
+
+### From source
+```sh-session
 # development
 $ npm run start
 
