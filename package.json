@@ -6,7 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/floogulinc/hyshare",
   "repository": "floogulinc/hyshare",
-  "bin": "dist/main.js",
+  "bin": "./dist/main.js",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

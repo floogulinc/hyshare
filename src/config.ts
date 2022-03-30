@@ -11,7 +11,7 @@ import {
   Min,
   IsEnum,
 } from 'class-validator';
-import { UrlType } from './hydrus-file';
+import { UrlType } from 'src/hydrus-file';
 
 export class EnvConfig {
   @IsString()
@@ -35,9 +35,6 @@ export class EnvConfig {
 
   @IsString()
   public readonly NODE_ENV: string = 'production';
-
-  @IsString()
-  public readonly npm_package_version: string;
 
   @IsBoolean()
   public readonly HYSHARE_LOG_REQUESTS: boolean = false;
