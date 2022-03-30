@@ -9,28 +9,28 @@ html[no-rounded] {
 }
 
 :root {
-  --tag-no-namespace: rgb(0, 111, 250);
-  --tag-default-namespace: rgb(114, 160, 193);
-  --tag-system: rgb(153, 101, 21);
-  --tag-meta: rgb(0, 0, 0);
-  --tag-creator: rgb(170, 0, 0);
-  --tag-studio: rgb(128, 0, 0);
-  --tag-character: rgb(0, 170, 0);
-  --tag-person: rgb(0, 128, 0);
-  --tag-series: rgb(170, 0, 170);
+  --tag-no-namespace: #2563eb;
+  --tag-default-namespace: #475569;
+  --tag-system: #d97706;
+  --tag-meta: #57534e;
+  --tag-creator: #dc2626;
+  --tag-studio: #b91c1c;
+  --tag-character: #16a34a;
+  --tag-person: #15803d;
+  --tag-series: #c026d3;
 }
 
 @media (prefers-color-scheme: dark) { 
   :root {
-    --tag-no-namespace: rgb(0, 111, 250);
-    --tag-default-namespace: rgb(114, 160, 193);
-    --tag-system: rgb(153, 101, 21);
-    --tag-meta: rgb(0, 0, 0);
-    --tag-creator: rgb(170, 0, 0);
-    --tag-studio: rgb(128, 0, 0);
-    --tag-character: rgb(0, 170, 0);
-    --tag-person: rgb(0, 128, 0);
-    --tag-series: rgb(170, 0, 170);
+    --tag-no-namespace: #60a5fa;
+    --tag-default-namespace: #94a3b8;
+    --tag-system: #fbbf24;
+    --tag-meta: #a8a29e;
+    --tag-creator: #f87171;
+    --tag-studio: #ef4444;
+    --tag-character: #4ade80;
+    --tag-person: #22c55e;
+    --tag-series: #e879f9;
   }
 }
 

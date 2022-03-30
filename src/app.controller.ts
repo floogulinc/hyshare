@@ -12,7 +12,6 @@ import {
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { Request, Response } from 'express';
 import { IsHash } from 'class-validator';
-import { EnvConfig } from './config';
 import ms from 'ms';
 
 class FileParams {

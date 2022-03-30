@@ -7,7 +7,7 @@ import { AppConfig, EnvConfig } from './config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import byteSize from 'byte-size';
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

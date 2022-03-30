@@ -2,7 +2,6 @@ import {
   IsNumber,
   IsString,
   IsArray,
-  ArrayContains,
   IsBoolean,
   IsOptional,
   IsUrl,
@@ -10,7 +9,9 @@ import {
   Length,
   IsPort,
   Min,
+  IsEnum,
 } from 'class-validator';
+import { UrlType } from './hydrus-file';
 
 export class EnvConfig {
   @IsString()
@@ -68,6 +69,7 @@ export class AppConfig {
   public readonly hiddenTags: string[] = [];
 
   @IsArray()
+  @IsString({ each: true })
   public readonly hiddenNamespaces: string[] = ['hyshare'];
 
   @IsString()
@@ -75,6 +77,7 @@ export class AppConfig {
   public readonly tagServiceToSearch?: string;
 
   @IsArray()
+  @IsString({ each: true })
   public readonly tagServicesToDisplay: string[] = ['all known tags'];
 
   @IsBoolean()
@@ -82,6 +85,10 @@ export class AppConfig {
 
   @IsBoolean()
   public readonly showUrls: boolean = true;
+
+  @IsArray()
+  @IsEnum(UrlType, { each: true })
+  public readonly urlTypesToDisplay: UrlType[] = [0, 3, 4];
 
   @IsBoolean()
   public readonly embedTitle: boolean = true;

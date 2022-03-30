@@ -12,11 +12,8 @@
 
       <meta property="og:image:height" content="{{height}}"/>
       <meta property="og:image:width" content="{{width}}"/>
-
-    {# <meta property="og:title" content="test"> #}
     {% case 1 %}{# video #}
       <meta name="twitter:card" content="player">
-
       <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
 
       <meta name="twitter:player:width" content="{{width}}">
@@ -24,16 +21,14 @@
       <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
       <meta name="twitter:player:stream:content_type" content="{{mime}}">
 
-      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
-
       <meta property="og:video" content="{{base_url}}/file/{{hash}}">
       <meta property="og:video:type" content="{{mime}}">
       <meta property="og:video:width" content="{{width}}">
       <meta property="og:video:height" content="{{height}}">
 
       <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+      <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
       {% case 2 %}{# audio #}
-
       <meta name="twitter:card" content="player">
       <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
 
@@ -75,7 +70,7 @@
             {% endif %}
           </div>
 
-          <div class="">
+          <div>
             <a class="btn btn-square btn-outline" href="/file/{{hash}}" download title="Download file">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -89,43 +84,50 @@
             </a>
           </div>
 
-          <div>
+          
             {% for knownUrl in detailed_known_urls %}
               {% if loop.first %}
+                <div>
                 <h2 class="font-medium">Known URLs</h2>
                 <ul>
               {% endif %}
               <li><a class="link" href="{{knownUrl.normalised_url}}" target="_blank" rel="noopener noreferrer">{{knownUrl.match_name}}</a></li>
               {% if loop.last %}
                 </ul>
+                </div>
               {% endif %}
             {% endfor %}
-          </div>
 
-          <div>
+          
             {% for name, note in notes %}
               {% if loop.first %}
+                <div>
                 <h2 class="font-medium">Notes</h2>
                 <ul>
               {% endif %}
               <li><label for="notes-{{loop.index}}" class="link modal-button">{{name}}</label></li>
               {% if loop.last %}
+                </div>
                 </ul>
               {% endif %}
             {% endfor %}
-          </div>
 
-          <div>
+          
             {% for serviceName, tags in tag_services_to_tags %}
-              {% if loop.first %}<h2 class="font-medium">Tags</h2>{% endif %}
+              {% if loop.first %}
+                <div>
+               <h2 class="font-medium">Tags</h2>
+              {% endif %}
               <h3 class="font-medium">{{serviceName}}</h3>
               <ul>
                 {% for tag in tags %}
                   <li class="tag-text" tag="{{tag}}">{{tag}}</li>
                 {% endfor %}
               </ul>
+              {% if loop.last %}
+                </div>
+              {% endif %}
             {% endfor %}
-          </div>
 
         </div>
       </div>

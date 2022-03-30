@@ -19,11 +19,13 @@ export function firstNamespaceTag(tags: string[], namespace: string) {
   return tags.find((t) => t.startsWith(namespace + ':'));
 }
 
-export function namespaceTags(tags: string[], namespace: string){
+export function namespaceTags(tags: string[], namespace: string) {
   return tags.filter((t) => t.startsWith(namespace + ':'));
 }
 
-export function flattenTagServices(tagServicesToTags: {[serviceName: string]: string[]}) {
+export function flattenTagServices(tagServicesToTags: {
+  [serviceName: string]: string[];
+}) {
   return Object.values(tagServicesToTags).flat();
 }
 

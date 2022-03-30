@@ -120,7 +120,9 @@ export class ViewFileController {
               has_audio,
               time_imported: fromUnixTime(firstImportTime),
               time_modified: fromUnixTime(time_modified),
-              detailed_known_urls,
+              detailed_known_urls: detailed_known_urls.filter(({ url_type }) =>
+                this.appConfig.urlTypesToDisplay.includes(url_type),
+              ),
               is_inbox,
               is_trashed,
               notes,
