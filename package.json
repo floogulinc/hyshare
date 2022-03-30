@@ -24,6 +24,9 @@
     "tailwind:dev": "tailwindcss -i ./src/styles.css -o ./dist/assets/styles.css --watch",
     "tailwind:build": "tailwindcss -i ./src/styles.css -o ./dist/assets/styles.css --minify"
   },
+  "files": [
+    "/dist"
+  ],
   "dependencies": {
     "@nestjs/axios": "^0.0.7",
     "@nestjs/common": "^8.0.0",
