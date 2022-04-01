@@ -133,14 +133,6 @@ export class HydrusApiService {
     );
   }
 
-  // public getThumbnailStream(hash: string) {
-  //   return this.apiGet(
-  //     'get_files/thumbnail',
-  //     { hash },
-  //     { responseType: 'stream' },
-  //   ).pipe(map((resp) => resp.data));
-  // }
-
   public async getThumbnailStream(
     hash: string,
     headers?,

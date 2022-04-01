@@ -75,7 +75,7 @@ Here are the app config items (they are all optional):
 
 | Config Item | Default Value | Description |
 |----|----|----|
-| `searchTags` | `[]` | An array of tags to add to each gallery search. Refer to the [Hydrus API docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for what can be used here. |
+| `searchTags` | `[]` | An array of tags to add to each gallery search. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for what can be used here. |
 | `searchPrefix` | `hyshare:` | The prefix to add to the requested gallery name. For example by default when `/gallery/test` is requested, hyshare will search Hydrus for `hyshare:test`. This can be blank, which will simply search verbatim for the tag `/gallery/{tag}`. |
 | `hiddenTags` | `[]` | An array of tags to hide in the file view. |
 | `hiddenNamespaces` | `["hyshare"]` | An array of namespaces to hide in the file view. |
@@ -90,3 +90,5 @@ Here are the app config items (they are all optional):
 | `fullThumbs` | `false` | A boolean indicating whether to show full thumbnails in the gallery view. If set to `false` thumbnails will be cropped in to fill the entire square. |
 | `noRounded` | `false` | A boolean indicating whether to disable rounded corners on various UI elements including thumbnails and buttons. |
 | `blackDarkTheme` | `false` | A boolean indicating whether to use a more pure-black dark theme. |
+| `defaultSortType` |  | An integer indicating which sort type to use in the gallery view. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for a list of valid sort types |
+| `defaultSortAsc` |  | A boolean indicating whether to use an ascending order for sorting in the gallery view. `true` results in ascending order, `false` results in descending order. |

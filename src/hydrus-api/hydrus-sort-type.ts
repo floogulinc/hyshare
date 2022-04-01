@@ -21,4 +21,3 @@ export enum HydrusSortType {
   ArchivedTimestamp = 19,
   Hash = 20,
 }
-

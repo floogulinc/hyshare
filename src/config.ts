@@ -12,6 +12,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { UrlType } from 'src/hydrus-file';
+import { HydrusSortType } from './hydrus-api/hydrus-sort-type';
 
 export class EnvConfig {
   @IsString()
@@ -104,4 +105,12 @@ export class AppConfig {
 
   @IsBoolean()
   public readonly blackDarkTheme: boolean = false;
+
+  @IsEnum(HydrusSortType)
+  @IsOptional()
+  public readonly defaultSortType?: HydrusSortType;
+
+  @IsBoolean()
+  @IsOptional()
+  public readonly defaultSortAsc?: boolean;
 }

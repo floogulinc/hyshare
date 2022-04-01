@@ -35,6 +35,8 @@ export class GalleryController {
           return_hashes: true,
           return_file_ids: false,
           tag_service_name: this.appConfig.tagServiceToSearch,
+          file_sort_type: this.appConfig.defaultSortType,
+          file_sort_asc: this.appConfig.defaultSortAsc,
         },
       )
       .pipe(map(({ hashes }) => ({ hashes, title: tag })));

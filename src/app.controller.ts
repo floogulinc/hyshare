@@ -27,9 +27,8 @@ export class AppController {
   @Render('index')
   @Header('Cache-Control', `public, max-age=${ms('1d') / 1000}`)
   @UseInterceptors(CacheInterceptor)
-  getHello() {
-    //return this.appService.getHello();
-    //return { message: 'Hello world!' };
+  getIndex() {
+    return;
   }
 
   @Get('thumbnail/:hash')
