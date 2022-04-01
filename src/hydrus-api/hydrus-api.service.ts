@@ -4,6 +4,7 @@ import { AxiosRequestHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { map, Observable } from 'rxjs';
 import { EnvConfig } from 'src/config';
 import { HydrusFileFromAPI } from 'src/hydrus-file';
+import { HydrusSortType } from './hydrus-sort-type';
 
 @Injectable()
 export class HydrusApiService {
@@ -41,21 +42,22 @@ export class HydrusApiService {
    * @param params additional parameters
    * @returns The full list of numerical file ids or hashes that match the search.
    */
-  public searchFiles<Hashes extends boolean>(
+  public searchFiles<Hashes extends boolean, IDs extends boolean>(
     tags: string[],
     params: {
       file_service_name?: string;
       file_service_key?: string;
       tag_service_name?: string;
       tag_service_key?: string;
-      file_sort_type?: number;
+      file_sort_type?: HydrusSortType;
       file_sort_asc?: boolean;
       return_hashes?: Hashes;
+      return_file_ids?: IDs;
     } = {},
-  ): Hashes extends true
-    ? Observable<{ hashes: string[] }>
-    : Observable<{ file_ids: number[] }> {
-    //this.logger.debug(`getFileMetadata: ${tags}`);
+  ): Observable<
+    (Hashes extends true ? { hashes: string[] } : Record<string, never>) &
+      (IDs extends true ? { file_ids: number[] } : Record<string, never>)
+  > {
     return this.apiGet('get_files/search_files', {
       tags: JSON.stringify(tags),
       ...params,

@@ -23,9 +23,8 @@ import {
   flattenTagServices,
   getTagValue,
 } from 'src/tag-utils';
-import { fromUnixTime } from 'date-fns';
 
-class GalleryParams {
+class ViewFilesParams {
   @IsHash('sha256')
   hash: string;
 }
@@ -118,8 +117,8 @@ export class ViewFileController {
               width,
               height,
               has_audio,
-              time_imported: fromUnixTime(firstImportTime),
-              time_modified: fromUnixTime(time_modified),
+              time_imported: firstImportTime,
+              time_modified,
               detailed_known_urls: detailed_known_urls.filter(({ url_type }) =>
                 this.appConfig.urlTypesToDisplay.includes(url_type),
               ),
@@ -139,13 +138,13 @@ export class ViewFileController {
   @UseInterceptors(CacheInterceptor)
   @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('view-file')
-  getGallery(@Param() params: GalleryParams) {
+  getGallery(@Param() params: ViewFilesParams) {
     return this.getFileData(params.hash);
   }
 
   @Get(':hash/data.json')
   @UseInterceptors(CacheInterceptor)
-  getGalleryData(@Param() params: GalleryParams) {
+  getGalleryData(@Param() params: ViewFilesParams) {
     return this.getFileData(params.hash);
   }
 
@@ -153,7 +152,7 @@ export class ViewFileController {
   @UseInterceptors(CacheInterceptor)
   @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('embed-video')
-  getEmbedVideo(@Param() params: GalleryParams) {
+  getEmbedVideo(@Param() params: ViewFilesParams) {
     return params;
   }
 }

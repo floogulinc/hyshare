@@ -66,7 +66,7 @@
             {% endif %}
             <div>Size: {{size|bytesize({ units: 'iec' }) }}</div>
             {% if time_imported %}
-            <div>Imported <time datetime="{{time_imported.toISOString()}}" title="{{time_imported.toISOString()}}">{{time_imported | distancetonow({addSuffix: true})}}</time></div>
+            <div>Imported <time datetime="{{(time_imported | fromunixtime).toISOString()}}" title="{{(time_imported | fromunixtime).toISOString()}}">{{time_imported | fromunixtime | distancetonow({addSuffix: true})}}</time></div>
             {% endif %}
           </div>
 
@@ -121,7 +121,7 @@
               <h3 class="font-medium">{{serviceName}}</h3>
               <ul>
                 {% for tag in tags %}
-                  <li class="tag-text" tag="{{tag}}">{{tag}}</li>
+                  <li class="tag-text break-all" tag="{{tag}}">{{tag}}</li>
                 {% endfor %}
               </ul>
               {% if loop.last %}
@@ -167,18 +167,16 @@
               type="{{mime}}">
             </embed>
           {% default %}
-          
-              <div class="hero h-full w-full">
-                <div class="hero-content flex-col">
-                  <div class="card">
-                    <img src="/thumbnail/{{hash}}" class="" />
-                  </div>
-                  <div>
-                    <h1 class="sm:text-5xl font-bold text-3xl text-center">Unsupported Filetype</h1>
-                  </div>
+            <div class="hero h-full w-full">
+              <div class="hero-content flex-col">
+                <div class="card">
+                  <img src="/thumbnail/{{hash}}" class="" />
+                </div>
+                <div>
+                  <h1 class="sm:text-5xl font-bold text-3xl text-center">Unsupported Filetype</h1>
                 </div>
               </div>
-
+            </div>
         {% endswitch %}
       </div>
     </div>

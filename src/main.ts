@@ -8,7 +8,7 @@ import { AppConfig, EnvConfig } from './config';
 import { HttpServer, Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import byteSize from 'byte-size';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, fromUnixTime } from 'date-fns';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version, homepage, name } = require('../package.json');
@@ -28,7 +28,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const env = app.get(EnvConfig);
   const appConfig = app.get(AppConfig);
@@ -43,6 +43,7 @@ async function bootstrap() {
   nunjucksEnv
     .addFilter('bytesize', byteSize)
     .addFilter('distancetonow', formatDistanceToNow)
+    .addFilter('fromunixtime', fromUnixTime)
     .addGlobal('appname', name)
     .addGlobal('version', version)
     .addGlobal('homepage', homepage)

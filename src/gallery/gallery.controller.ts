@@ -33,6 +33,7 @@ export class GalleryController {
         [`${this.appConfig.searchPrefix}${tag}`, ...this.appConfig.searchTags],
         {
           return_hashes: true,
+          return_file_ids: false,
           tag_service_name: this.appConfig.tagServiceToSearch,
         },
       )
