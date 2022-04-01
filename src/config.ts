@@ -11,7 +11,8 @@ import {
   Min,
   IsEnum,
 } from 'class-validator';
-import { UrlType } from 'src/hydrus-file';
+import { HydrusFileType, UrlType } from 'src/hydrus-file';
+import { HydrusSortType } from "./hydrus-api/hydrus-sort-type";
 
 export class EnvConfig {
   @IsString()
@@ -104,4 +105,21 @@ export class AppConfig {
 
   @IsBoolean()
   public readonly blackDarkTheme: boolean = false;
+
+  @IsArray()
+  @IsEnum(HydrusSortType, { each: true })
+  public readonly allowedSortTypes: HydrusSortType[] = [
+    HydrusSortType.ImportTime,
+    HydrusSortType.FileSize,
+    HydrusSortType.Random,
+    HydrusSortType.Width,
+    HydrusSortType.Height,
+    HydrusSortType.Ratio,
+    HydrusSortType.NumPixels,
+    HydrusSortType.NumTags,
+  ];
+
+  @IsEnum(HydrusSortType)
+  @IsOptional()
+  public readonly defaultSortType?: HydrusSortType;
 }
