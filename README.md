@@ -20,6 +20,7 @@ To share individual files, simply copy the SHA256 hash from Hydrus and append it
 ```sh-session
 $ npm install -g hyshare
 ```
+(run again to update)
 
 ### Docker
 A Docker image is published [here](https://github.com/floogulinc/hyshare/pkgs/container/hyshare)

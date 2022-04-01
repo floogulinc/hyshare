@@ -1,19 +1,16 @@
 name: Build Containers
+
 on:
   push:
     tags:
       - 'v*'
-
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
 
       - name: Docker meta
         id: docker_meta
