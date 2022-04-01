@@ -1,11 +1,17 @@
 hyshare
 =========
 
-Share galleries and files from Hydrus on the web
+Share galleries and files from [Hydrus](https://hydrusnetwork.github.io/hydrus/) on the web
 
 [![Version](https://img.shields.io/npm/v/hyshare.svg)](https://npmjs.org/package/hyshare)
 [![Downloads/week](https://img.shields.io/npm/dw/hyshare.svg)](https://npmjs.org/package/hyshare)
 [![License](https://img.shields.io/npm/l/hyshare.svg)](https://github.com/floogulinc/hyshare/blob/master/package.json)
+
+hyshare allows you to share galleries of files from hydrus using tags and individual files using just a link. It communicates to the Hydrus client using it's API. 
+
+To share a gallery with hyshare. Set a tag on all the files you want to share using the prefix/namespace you have configured (by default `hyshare:`). Whatever is after the prefix will become the path to the gallery. For example if you used a tag `hyshare:demo`, the gallery would be at `<your hyshare url>/gallery/demo`.
+
+To share individual files, simply copy the SHA256 hash from Hydrus and append it to this path `<your hyshare url>/view/`. For example, `<your hyshare url>/view/ad6d3599a6c489a575eb19c026face97a9cd6579e74728b0ce94a601d232f3c3`.
 
 
 ## Installation
@@ -23,7 +29,9 @@ A Docker image is published [here](https://github.com/floogulinc/hyshare/pkgs/co
 $ npm install
 ```
 
-## Running the app
+## Running the server
+
+You will need your API key and potentially your API URL configured in an environment variable ([see below](#environment-config)) before running the server.
 
 ### NPM
 ```sh-session
@@ -49,7 +57,7 @@ $ npm run start:prod
 
 ## Configuration
 
-hyshare has two sets of configuration items. The environment config and app config.
+hyshare has two sets of configuration items. The environment config and app config. You will need to restart hyshare for any changes to apply.
 
 ### Environment Config
 
@@ -92,3 +100,79 @@ Here are the app config items (they are all optional):
 | `blackDarkTheme` | `false` | A boolean indicating whether to use a more pure-black dark theme. |
 | `defaultSortType` |  | An integer indicating which sort type to use in the gallery view. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for a list of valid sort types |
 | `defaultSortAsc` |  | A boolean indicating whether to use an ascending order for sorting in the gallery view. `true` results in ascending order, `false` results in descending order. |
+
+## Running as a service
+
+There are many ways to run hyshare as a service. [PM2](https://pm2.keymetrics.io/) for example may work. I will share the steps for what I use personally on Windows.
+
+### Windows with WinSW
+
+1. Install `hyshare` with NPM ([see above](#installation)).
+2. Create a `hyshare` folder somewhere. I put this in my user folder. You can put your `.env` file and `.hyshare.json` file here for config.
+3. Download [WinSW](https://github.com/winsw/winsw/releases/latest), rename the exe to `hyshare-service.exe` and put it in your `hyshare` folder.
+4. Find where your hyshare script is by running `get-command hyshare` in PowerShell. You should get something like `C:\Users\floogulinc\AppData\Roaming\npm\hyshare.ps1` in the result.
+5. Create a file called `hyshare-service.xml` in your `hyshare` folder. Using the below template, replace the `<executable>` entry with what you found in the previous step, replacing `.ps1` with `.cmd`.
+    ```xml
+    <service>
+      <id>hyshare</id>
+      <!-- Display name of the service -->
+      <name>hyshare</name>
+      <!-- Service description -->
+      <description>hyshare server</description>
+      <executable>C:\Users\floogulinc\AppData\Roaming\npm\hyshare.cmd</executable>
+      <arguments>run</arguments>
+      <log mode="roll-by-time">
+        <pattern>yyyy-MM-dd</pattern>
+      </log>
+    </service>
+    ``` 
+6. Open a PowerShell window in your `hyshare` directory and run `.\hyshare-service.exe install`. That should install the service. You can open `services.msc` to check and start it if it's not already started.
+
+## Reverse Proxy and HTTPS
+
+You will probably want to expose your hyshare server to the internet. It is recommended to use a reverse proxy to serve hyshare over HTTPS. There are many options for this so here are some potential ways to do it.
+
+### Caddy and port forwarding
+
+If you are comfortable port forwarding to the machine you run hyshare on you can easily setup Caddy with automatic HTTPS.
+
+For users who have already [setup Caddy, Duck DNS, and Tailscale](https://github.com/floogulinc/hydrus-web/wiki/Accessing-the-Hydrus-API-with-Caddy,-Duck-DNS,-and-Tailscale) for Hydrus Web, skip to step 3, appending the config to your existing `Caddyfile` using a new subdomain from DuckDNS or somewhere else. 
+
+1. Download [Caddy](https://caddyserver.com/)
+2. Setup Caddy to run as a service using [these instructions](https://caddyserver.com/docs/running).
+3. Create your `Caddyfile` in the directory you created in the last step:
+    ```
+    https://YOUR_DOMAIN {
+      reverse_proxy localhost:3000
+      tls YOUR_EMAIL
+      encode zstd gzip
+    }
+    ```
+    Replace `YOUR_DOMAIN` with some domain that points at your public IP address. This can be a free subdomain from somewhere like [Duck DNS](https://www.duckdns.org/). Replace `YOUR_EMAIL` with your email address.
+4. Reload Caddy or restart the service.
+
+### Private share with Caddy and Tailscale
+
+If you would like to share files securely with only a few people you can all use Tailscale to have a private connection between your computers. You can largely follow the [existing guide for use with Hydrus Web](https://github.com/floogulinc/hydrus-web/wiki/Accessing-the-Hydrus-API-with-Caddy,-Duck-DNS,-and-Tailscale) and substitute `localhost:45869` with `localhost:3000` or whatever port hyshare is running on.
+
+Another option will be using Caddy 2.5 which is currently in beta. Caddy 2.5 will allow you to skip using DuckDNS or otherwise and directly obtain a HTTPS certificate from Tailscale.
+
+Finally, you can even just serve hyshare over HTTP if using Tailscale since Tailscale is already encrypting the data. Simple have Tailscale and hyshare running and your other devices and those you have shared your machine with on Tailscale will be able to access hyshare directly.
+
+### Cloudflare Tunnel
+
+This is what I personally use. It allows you to share your hyshare server with the internet without port forwarding. This works by having the Cloudflare daemon running on your machine which will receive any requests to the Cloudflare domain/subdomain you have pointed to it. This will require you have a domain set up with Cloudflare. 
+
+I suggest following their documentation for [running as a service](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/run-tunnel/as-a-service/).
+
+As an example, my `config.yml` file looks like:
+```yaml
+tunnel: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+credentials-file: C:\Windows\System32\config\systemprofile\.cloudflared\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.json
+
+ingress:
+  - hostname: hyshare.XXXXXXXXX.com
+    service: http://localhost:3000
+  - service: http_status:404
+logfile:  C:\Cloudflared\cloudflared.log
+```
