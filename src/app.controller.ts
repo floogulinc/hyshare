@@ -44,7 +44,10 @@ export class AppController {
     res
       .status(thumb.status)
       .header(thumb.headers)
-      .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
+      .setHeader(
+        'Cache-Control',
+        `public, max-age=${ms('1y') / 1000}, immutable`,
+      );
     thumb.data.pipe(res);
   }
 
@@ -61,7 +64,10 @@ export class AppController {
     res
       .status(file.status)
       .header(file.headers)
-      .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
+      .setHeader(
+        'Cache-Control',
+        `public, max-age=${ms('1y') / 1000}, immutable`,
+      );
     file.data.pipe(res);
   }
 }
