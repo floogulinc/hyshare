@@ -44,10 +44,7 @@ export class AppController {
     res
       .status(thumb.status)
       .header(thumb.headers)
-      .setHeader(
-        'Cache-Control',
-        `public, max-age=${ms('1y') / 1000}, immutable`,
-      );
+      .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
     thumb.data.pipe(res);
   }
 
