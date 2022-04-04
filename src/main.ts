@@ -9,9 +9,14 @@ import { HttpServer, Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import byteSize from 'byte-size';
 import { formatDistanceToNow, fromUnixTime } from 'date-fns';
+import onHeaders from 'on-headers';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version, homepage, name } = require('../package.json');
+
+function setNoCacheHeader() {
+  this.setHeader('Cache-Control', 'no-cache');
+}
 
 async function bootstrap() {
   const logger = new Logger();
@@ -36,10 +41,21 @@ async function bootstrap() {
   logger.log(`Starting ${name} v${version}`);
   logger.log(`Environment: ${env.NODE_ENV}`);
 
+  if (dev) {
+    app.use((req, res, next) => {
+      onHeaders(res, setNoCacheHeader);
+      next();
+    });
+  }
+
   const assets = join(__dirname, '.', 'assets'); // Directory with static HTML/CSS/JS/other files
   const views = join(__dirname, '.', 'templates'); // Directory with *.njk templates
 
-  const nunjucksEnv = nunjucks.configure(views, { express, watch: dev, noCache: dev });
+  const nunjucksEnv = nunjucks.configure(views, {
+    express,
+    watch: dev,
+    noCache: dev,
+  });
   nunjucksEnv
     .addFilter('bytesize', byteSize)
     .addFilter('distancetonow', formatDistanceToNow)
