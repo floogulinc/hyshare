@@ -61,12 +61,14 @@ export class EnvConfig {
 
 export class AppConfig {
   @IsArray()
+  @IsString({ each: true })
   public readonly searchTags: string[] = [];
 
   @IsString()
   public readonly searchPrefix: string = 'hyshare:';
 
   @IsArray()
+  @IsString({ each: true })
   public readonly hiddenTags: string[] = [];
 
   @IsArray()
@@ -90,6 +92,10 @@ export class AppConfig {
   @IsArray()
   @IsEnum(UrlType, { each: true })
   public readonly urlTypesToDisplay: UrlType[] = [0, 3, 4];
+
+  @IsArray()
+  @IsString({ each: true })
+  public readonly hiddenUrlClassNames: string[] = [];
 
   @IsBoolean()
   public readonly embedTitle: boolean = true;

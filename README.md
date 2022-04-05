@@ -94,6 +94,7 @@ Here are the app config items (they are all optional):
 | `showNotes` | `true` | A boolean indicating whether to show notes on the file view |
 | `showUrls` | `true` | A boolean indicating whether to show known URLs on the file view |
 | `urlTypesToDisplay` | `[0, 3, 4]` | An array of integers indicating which types of URLs to display in the file view. See [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#add_urls_get_url_info) for a list of URL types. |
+| `hiddenUrlClassNames` | `[]` | An array of Hydrus URL class names that will be hidden from the file view. |
 | `embedTitle` | `true` | A boolean indicating whether to include the title of the file in embed metadata tags (for example for Discord embeds) |
 | `titleFromNamespace` | `true` | A boolean indicating whether to try to determine a title for the file from the first tag with a title namespace, configured below. If this is `false` or no title tag is found it falls back to "Image File" for example. |
 | `titleNamespace` | `title` | The namespace to use to determine a file's title. |

@@ -119,8 +119,10 @@ export class ViewFileController {
               has_audio,
               time_imported: firstImportTime,
               time_modified,
-              detailed_known_urls: detailed_known_urls.filter(({ url_type }) =>
-                this.appConfig.urlTypesToDisplay.includes(url_type),
+              detailed_known_urls: detailed_known_urls.filter(
+                ({ match_name, url_type }) =>
+                  this.appConfig.urlTypesToDisplay.includes(url_type) &&
+                  !this.appConfig.hiddenUrlClassNames.includes(match_name),
               ),
               is_inbox,
               is_trashed,
