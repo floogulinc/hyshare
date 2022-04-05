@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import byteSize from 'byte-size';
 import { formatDistanceToNow, fromUnixTime } from 'date-fns';
 import onHeaders from 'on-headers';
+import { NextFunction, Request, Response } from 'express';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version, homepage, name } = require('../package.json');
@@ -42,7 +43,7 @@ async function bootstrap() {
   logger.log(`Environment: ${env.NODE_ENV}`);
 
   if (dev) {
-    app.use((req, res, next) => {
+    app.use((_req: Request, res: Response, next: NextFunction) => {
       onHeaders(res, setNoCacheHeader);
       next();
     });
