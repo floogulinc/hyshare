@@ -8,7 +8,10 @@
 {% block body %}
 
   <div class="container mx-auto my-8 px-4 grow">
-    <h1 class="text-4xl mb-4 font-bold">{{ title }}</h1>
+    <div class="flex flex-row flex-wrap items-baseline mb-4 gap-2">
+      <h1 class="text-3xl font-semibold grow">{{ title }}</h1>
+      <span class="badge badge-lg badge-outline">{{hashes|length}} files</span>
+    </div>
 
     <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
       {% for hash in hashes %}
