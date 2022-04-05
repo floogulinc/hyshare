@@ -71,7 +71,8 @@ Here are all the environment config items (they are optional unless stated other
 | `HYSHARE_PORT` | `3000` | The port to serve hyshare on. |
 | `HYSHARE_HYDRUS_API_URL` | `http://localhost:45869/` | The URL to your Hydrus client API. |
 | `HYSHARE_HYDRUS_API_KEY` |  | (**required**) an access key for the Hydrus API. It should have the "search for files" permission enabled. |
-| `HYSHARE_LOG_REQUESTS` | `false` | Whether hyshare should log each request to the console. |
+| `HYSHARE_LOG_REQUESTS` | `false` | Whether hyshare should log each request to the console. If `true` hyshare will use [morgan](https://www.npmjs.com/package/morgan) to log every request. |
+| `HYSHARE_REQUEST_LOG_FORMAT` | `common` | The morgan format to use for logged requests. See the list of [pre-defined formats](https://www.npmjs.com/package/morgan#predefined-formats) or create your own with the default [tokens](https://www.npmjs.com/package/morgan#tokens) |
 | `HYSHARE_CACHE_TTL` | `60` | The length of time in minutes hyshare should cache responses. |
 | `HYSHARE_BASE_URL` |  | The base URL hyshare is served on. Used for twitter embed meta tags that require an absolute URL. |
 | `NODE_ENV` | `production` | (development only) The environment type hyshare is running in (set to `development` to have nunjucks watch for changes to the templates). |

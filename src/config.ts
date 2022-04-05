@@ -40,6 +40,9 @@ export class EnvConfig {
   @IsBoolean()
   public readonly HYSHARE_LOG_REQUESTS: boolean = false;
 
+  @IsString()
+  public readonly HYSHARE_REQUEST_LOG_FORMAT: string = 'common';
+
   @IsNumber()
   @Min(0)
   public readonly HYSHARE_CACHE_TTL: number = 60;

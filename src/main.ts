@@ -5,12 +5,13 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import * as nunjucks from 'nunjucks';
 import { AppConfig, EnvConfig } from './config';
-import { HttpServer, Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import byteSize from 'byte-size';
 import { formatDistanceToNow, fromUnixTime } from 'date-fns';
 import onHeaders from 'on-headers';
 import { NextFunction, Request, Response } from 'express';
+import morgan from 'morgan';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version, homepage, name } = require('../package.json');
@@ -47,6 +48,10 @@ async function bootstrap() {
       onHeaders(res, setNoCacheHeader);
       next();
     });
+  }
+
+  if (env.HYSHARE_LOG_REQUESTS) {
+    app.use(morgan(env.HYSHARE_REQUEST_LOG_FORMAT));
   }
 
   const assets = join(__dirname, '.', 'assets'); // Directory with static HTML/CSS/JS/other files

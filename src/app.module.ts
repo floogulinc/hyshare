@@ -12,7 +12,6 @@ import { GalleryController } from './gallery/gallery.controller';
 import { ViewFileController } from './view-file/view-file.controller';
 import { dotenvLoader, fileLoader, TypedConfigModule } from 'nest-typed-config';
 import { AppConfig, EnvConfig } from './config';
-import { LoggerMiddleware } from './logger.middleware';
 
 @Module({
   imports: [
@@ -58,14 +57,4 @@ import { LoggerMiddleware } from './logger.middleware';
   controllers: [AppController, GalleryController, ViewFileController],
   providers: [HydrusApiService],
 })
-export class AppModule implements NestModule {
-  constructor(private env: EnvConfig) {}
-  configure(consumer: MiddlewareConsumer) {
-    if (this.env.HYSHARE_LOG_REQUESTS) {
-      consumer.apply(LoggerMiddleware).forRoutes({
-        path: '*',
-        method: RequestMethod.ALL,
-      });
-    }
-  }
-}
+export class AppModule {}
