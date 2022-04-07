@@ -75,7 +75,9 @@ Here are all the environment config items (they are optional unless stated other
 | `HYSHARE_REQUEST_LOG_FORMAT` | `common` | The morgan format to use for logged requests. See the list of [pre-defined formats](https://www.npmjs.com/package/morgan#predefined-formats) or create your own with the default [tokens](https://www.npmjs.com/package/morgan#tokens) |
 | `HYSHARE_CACHE_TTL` | `60` | The length of time in minutes hyshare should cache responses. |
 | `HYSHARE_BASE_URL` |  | The base URL hyshare is served on. Used for twitter embed meta tags that require an absolute URL. |
+| `HYSHARE_THUMBNAIL_DIR` |  | The absolute directory where Hydrus thumbnails are stored. Providing this will allow hyshare to serve thumbnails directly from disk where possible instead of going through the Hydrus API. This directory should be the one containing `t00` through `tff` subdirectories with the thumbnails inside them. By default this would be the `client_files` directory in the `db` directory in a regular Hydrus install. |
 | `NODE_ENV` | `production` | (development only) The environment type hyshare is running in (set to `development` to have nunjucks watch for changes to the templates). |
+
 
 ### App Config
 
