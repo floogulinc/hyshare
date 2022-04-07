@@ -48,6 +48,10 @@ export class EnvConfig {
   @Min(0)
   public readonly HYSHARE_CACHE_TTL: number = 60;
 
+  @IsNumber()
+  @Min(0)
+  public readonly HYSHARE_HYDRUS_API_TIMEOUT: number = 30000;
+
   @IsString()
   @IsOptional()
   @IsUrl({

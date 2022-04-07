@@ -18,9 +18,6 @@ import { AppConfig, EnvConfig } from './config';
     TypedConfigModule.forRoot({
       schema: EnvConfig,
       load: [
-        // fileLoader({
-        //   /* options */
-        // }),
         dotenvLoader({
           /* options */
         }),
@@ -33,6 +30,12 @@ import { AppConfig, EnvConfig } from './config';
         if (config.HYSHARE_CACHE_TTL) {
           config.HYSHARE_CACHE_TTL = parseInt(config.HYSHARE_CACHE_TTL, 10);
         }
+        if (config.HYSHARE_HYDRUS_API_TIMEOUT) {
+          config.HYSHARE_HYDRUS_API_TIMEOUT = parseInt(
+            config.HYSHARE_HYDRUS_API_TIMEOUT,
+            10,
+          );
+        }
         return config;
       },
     }),
@@ -40,12 +43,17 @@ import { AppConfig, EnvConfig } from './config';
       schema: AppConfig,
       load: [
         fileLoader({
-          /* options */
           basename: '.hyshare',
         }),
       ],
     }),
-    HttpModule,
+    HttpModule.registerAsync({
+      imports: [AppModule],
+      useFactory: async (env: EnvConfig) => ({
+        timeout: env.HYSHARE_HYDRUS_API_TIMEOUT,
+      }),
+      inject: [EnvConfig],
+    }),
     CacheModule.registerAsync({
       imports: [AppModule],
       useFactory: async (env: EnvConfig) => ({
