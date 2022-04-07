@@ -62,7 +62,7 @@ hyshare has two sets of configuration items. The environment config and app conf
 
 ### Environment Config
 
-The environment config is loaded from environment variables and optionally a `.env` file (using [dotenv](https://www.npmjs.com/package/dotenv)).
+The environment config is loaded from environment variables and optionally a `.env` file (using [dotenv](https://www.npmjs.com/package/dotenv)). It looks in the current working directory for this `.env` file.
 
 Here are all the environment config items (they are optional unless stated otherwise):
 
@@ -81,7 +81,7 @@ Here are all the environment config items (they are optional unless stated other
 
 ### App Config
 
-The app config is loaded from a JSON, YAML, or JS file using [cosmicconfig](https://github.com/davidtheclark/cosmiconfig). It looks for a file called `.hyshare.json` (could also be `.yml` for example) starting in the hyshare project directory and moving up until it hits your home directory. This means you can put `.hyshare.json` in your home folder.
+The app config is loaded from a JSON, YAML, or JS file using [cosmicconfig](https://github.com/davidtheclark/cosmiconfig). It looks for a file called `.hyshare.json` (could also be `.yml` for example) starting in the current working directory and moving up until it hits your home directory. This means you can put `.hyshare.json` in your home folder.
 
 Here are the app config items (they are all optional):
 
