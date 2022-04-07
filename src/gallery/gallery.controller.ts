@@ -39,7 +39,14 @@ export class GalleryController {
           file_sort_asc: this.appConfig.defaultSortAsc,
         },
       )
-      .pipe(map(({ hashes }) => ({ hashes, title: tag })));
+      .pipe(
+        map(({ hashes }) => ({
+          hashes: hashes.filter(
+            (hash) => !this.appConfig.blockedHashes.includes(hash),
+          ),
+          title: tag,
+        })),
+      );
   }
 
   @Get(':tag')

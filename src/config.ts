@@ -10,6 +10,7 @@ import {
   IsPort,
   Min,
   IsEnum,
+  IsHash,
 } from 'class-validator';
 import { UrlType } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-api/hydrus-sort-type';
@@ -122,4 +123,8 @@ export class AppConfig {
   @IsBoolean()
   @IsOptional()
   public readonly defaultSortAsc?: boolean;
+
+  @IsArray()
+  @IsHash('sha256', { each: true })
+  public readonly blockedHashes: string[] = [];
 }

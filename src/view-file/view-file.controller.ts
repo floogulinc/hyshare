@@ -5,11 +5,13 @@ import {
   Header,
   Param,
   Render,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { IsHash } from 'class-validator';
 import ms from 'ms';
 import { map } from 'rxjs';
+import { BlockedHashGuard } from 'src/blocked-hash.guard';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import {
@@ -137,6 +139,7 @@ export class ViewFileController {
   }
 
   @Get(':hash')
+  @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('view-file')
@@ -145,12 +148,14 @@ export class ViewFileController {
   }
 
   @Get(':hash/data.json')
+  @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   getGalleryData(@Param() params: ViewFilesParams) {
     return this.getFileData(params.hash);
   }
 
   @Get(':hash/embed-video')
+  @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('embed-video')

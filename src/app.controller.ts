@@ -8,11 +8,13 @@ import {
   Header,
   CacheInterceptor,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { Request, Response } from 'express';
 import { IsHash } from 'class-validator';
 import ms from 'ms';
+import { BlockedHashGuard } from './blocked-hash.guard';
 
 class FileParams {
   @IsHash('sha256')
@@ -32,6 +34,7 @@ export class AppController {
   }
 
   @Get('thumbnail/:hash')
+  @UseGuards(BlockedHashGuard)
   async getThumbnail(
     @Param() params: FileParams,
     @Req() req: Request,
@@ -49,6 +52,7 @@ export class AppController {
   }
 
   @Get('file/:hash')
+  @UseGuards(BlockedHashGuard)
   async getFile(
     @Param() params: FileParams,
     @Req() req: Request,
