@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UseGuards,
   StreamableFile,
+  HttpException,
 } from '@nestjs/common';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { Request, Response } from 'express';
@@ -28,7 +29,10 @@ class FileParams {
 
 @Controller()
 export class AppController {
-  constructor(private readonly hydrusApiService: HydrusApiService, private env: EnvConfig) {}
+  constructor(
+    private readonly hydrusApiService: HydrusApiService,
+    private env: EnvConfig,
+  ) {}
 
   @Get()
   @Render('index')
@@ -57,15 +61,26 @@ export class AppController {
         }
       } catch {}
     }
-    const thumb = await this.hydrusApiService.getThumbnailStream(
-      hash,
-      req.headers,
-    );
-    res
-      .status(thumb.status)
-      .header(thumb.headers)
-      .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
-    thumb.data.pipe(res);
+    try {
+      const thumb = await this.hydrusApiService.getThumbnailStream(
+        hash,
+        req.headers,
+      );
+      res
+        .status(thumb.status)
+        .header(thumb.headers)
+        .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
+      thumb.data.pipe(res);
+    } catch (error) {
+      if (error.response) {
+        throw new HttpException(
+          error.response.statusText,
+          error.response.status,
+        );
+      } else {
+        throw error;
+      }
+    }
   }
 
   @Get('file/:hash')
@@ -75,17 +90,28 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const file = await this.hydrusApiService.getFileStream(
-      params.hash,
-      req.headers,
-    );
-    res
-      .status(file.status)
-      .header(file.headers)
-      .setHeader(
-        'Cache-Control',
-        `public, max-age=${ms('1y') / 1000}, immutable`,
+    try {
+      const file = await this.hydrusApiService.getFileStream(
+        params.hash,
+        req.headers,
       );
-    file.data.pipe(res);
+      res
+        .status(file.status)
+        .header(file.headers)
+        .setHeader(
+          'Cache-Control',
+          `public, max-age=${ms('1y') / 1000}, immutable`,
+        );
+      file.data.pipe(res);
+    } catch (error) {
+      if (error.response) {
+        throw new HttpException(
+          error.response.statusText,
+          error.response.status,
+        );
+      } else {
+        throw error;
+      }
+    }
   }
 }
