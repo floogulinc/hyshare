@@ -92,9 +92,9 @@ export class ViewFileController {
 
             const file_type = type(mime);
             const fileTypeString =
-              (file_type !== HydrusFileType.Unsupported
-                ? HydrusFileType[file_type]
-                : '') + ' File';
+              file_type !== HydrusFileType.Unsupported
+                ? `${HydrusFileType[file_type]} File`
+                : 'File';
 
             const title = this.appConfig.titleFromNamespace
               ? getTagValue(
