@@ -9,12 +9,17 @@ import {
   CacheInterceptor,
   UseInterceptors,
   UseGuards,
+  StreamableFile,
 } from '@nestjs/common';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { Request, Response } from 'express';
 import { IsHash } from 'class-validator';
 import ms from 'ms';
 import { BlockedHashGuard } from './blocked-hash.guard';
+import { createReadStream } from 'fs';
+import { join } from 'path';
+import { stat } from 'fs/promises';
+import { EnvConfig } from './config';
 
 class FileParams {
   @IsHash('sha256')
@@ -23,7 +28,7 @@ class FileParams {
 
 @Controller()
 export class AppController {
-  constructor(private readonly hydrusApiService: HydrusApiService) {}
+  constructor(private readonly hydrusApiService: HydrusApiService, private env: EnvConfig) {}
 
   @Get()
   @Render('index')
@@ -40,8 +45,20 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    const { hash } = params;
+    if (this.env.HYSHARE_THUMBNAIL_DIR) {
+      const filename = `./t${hash.substring(0, 2)}/${hash}.thumbnail`;
+      const path = join(this.env.HYSHARE_THUMBNAIL_DIR, filename);
+      try {
+        const statResult = await stat(path);
+        if (statResult.isFile()) {
+          res.sendFile(path, { maxAge: '1y' });
+          return;
+        }
+      } catch {}
+    }
     const thumb = await this.hydrusApiService.getThumbnailStream(
-      params.hash,
+      hash,
       req.headers,
     );
     res

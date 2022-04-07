@@ -58,6 +58,10 @@ export class EnvConfig {
     require_tld: false,
   })
   public readonly HYSHARE_BASE_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  public readonly HYSHARE_THUMBNAIL_DIR?: string;
 }
 
 export class AppConfig {
