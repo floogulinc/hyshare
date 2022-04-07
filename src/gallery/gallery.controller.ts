@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { IsNotEmpty, IsString, NotContains } from 'class-validator';
 import ms from 'ms';
-import { map } from 'rxjs';
+import { map, retry } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 
@@ -40,6 +40,7 @@ export class GalleryController {
         },
       )
       .pipe(
+        retry(2),
         map(({ hashes }) => ({
           hashes: hashes.filter(
             (hash) => !this.appConfig.blockedHashes.includes(hash),

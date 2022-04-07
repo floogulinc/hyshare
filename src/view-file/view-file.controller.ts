@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { IsHash } from 'class-validator';
 import ms from 'ms';
-import { map } from 'rxjs';
+import { map, retry } from 'rxjs';
 import { BlockedHashGuard } from 'src/blocked-hash.guard';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
@@ -68,6 +68,7 @@ export class ViewFileController {
         include_notes: this.appConfig.showNotes,
       })
       .pipe(
+        retry(2),
         map(({ metadata }) => metadata[0]),
         map(
           ({
