@@ -11,6 +11,7 @@ import {
   Min,
   IsEnum,
   IsHash,
+  IsObject,
 } from 'class-validator';
 import { UrlType } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-api/hydrus-sort-type';
@@ -135,4 +136,7 @@ export class AppConfig {
   @IsArray()
   @IsHash('sha256', { each: true })
   public readonly blockedHashes: string[] = [];
+
+  @IsObject()
+  public readonly redirects: Record<string, string> = {};
 }

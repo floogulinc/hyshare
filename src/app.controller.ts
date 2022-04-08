@@ -9,18 +9,18 @@ import {
   CacheInterceptor,
   UseInterceptors,
   UseGuards,
-  StreamableFile,
   HttpException,
+  Redirect,
+  NotFoundException,
 } from '@nestjs/common';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { Request, Response } from 'express';
 import { IsHash } from 'class-validator';
 import ms from 'ms';
 import { BlockedHashGuard } from './blocked-hash.guard';
-import { createReadStream } from 'fs';
 import { join } from 'path';
 import { stat } from 'fs/promises';
-import { EnvConfig } from './config';
+import { AppConfig, EnvConfig } from './config';
 
 class FileParams {
   @IsHash('sha256')
@@ -32,6 +32,7 @@ export class AppController {
   constructor(
     private readonly hydrusApiService: HydrusApiService,
     private env: EnvConfig,
+    private appConfig: AppConfig
   ) {}
 
   @Get()
@@ -112,6 +113,16 @@ export class AppController {
       } else {
         throw error;
       }
+    }
+  }
+
+  @Get(':path')
+  @Redirect()
+  redirects(@Param('path') path: string) {
+    if (path in this.appConfig.redirects) {
+      return { url: this.appConfig.redirects[path] };
+    } else {
+      throw new NotFoundException();
     }
   }
 }
