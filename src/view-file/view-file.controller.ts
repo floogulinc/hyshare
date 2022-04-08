@@ -46,16 +46,19 @@ export class ViewFileController {
     );
     const newTagServices = {};
     for (const s of serviceNames) {
-      if (!(s in tagServices)) {
+      if (!tagServices[s]) {
         continue;
       }
-      newTagServices[s] = tagServices[s].filter(
+      const newTags = tagServices[s].filter(
         (tag) =>
           !this.appConfig.hiddenTags.includes(tag) &&
           !this.appConfig.hiddenNamespaces.find((ft) =>
             tag.startsWith(ft + ':'),
           ),
       );
+      if (newTags.length > 0) {
+        newTagServices[s] = newTags;
+      }
     }
     return newTagServices;
   }
