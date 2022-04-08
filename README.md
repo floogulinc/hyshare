@@ -47,12 +47,15 @@ $ docker run -p 3000:3000 ghcr.io/floogulinc/hyshare
 ### From source
 ```sh-session
 # development
+$ npm run tailwind:build
 $ npm run start
 
 # watch mode
+$ npm run tailwind:dev
 $ npm run start:dev
 
 # production mode
+$ npm run tailwind:build
 $ npm run start:prod
 ```
 
