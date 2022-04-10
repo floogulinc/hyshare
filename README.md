@@ -110,6 +110,7 @@ Here are the app config items (they are all optional):
 | `defaultSortType` |  | An integer indicating which sort type to use in the gallery view. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for a list of valid sort types |
 | `defaultSortAsc` |  | A boolean indicating whether to use an ascending order for sorting in the gallery view. `true` results in ascending order, `false` results in descending order. |
 | `blockedHashes` | `[]` | An array of SHA256 hashes that will be blocked from galleries, the file view, thumbnail, and file requests. |
+| `errorNonLocal` | `false` | A boolean indicating whether hyshare should return a 404 Not Found error when a non-local file is attempted to be accessed at the `/view` path. A non-local file is any where Hydrus doesn't have the actual file, so any files you've never imported and those that have been permanently deleted. This does not include files in the trash. When set to false, information about deleted files or files that you've never imported but have tags in a tag service (like the PTR) will be returned. |
 | `redirects` | `{}` | A JSON object of paths to URLs for custom redirects. Only one one level of path is supported (eg no `/`s). For example `{ "test": "https://example.com" }` will produce a redirect from `/test` to `https://example.com`. Relative URLs are also supported for the redirect target. |
 
 ## Running as a service

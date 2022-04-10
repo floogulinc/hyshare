@@ -4,49 +4,55 @@
 
   <meta property="og:url" content="{{base_url}}/view/{{hash}}">
 
-  {% switch file_type %}
-    {% case 0 %}{# image #}
-      <meta property="og:image" content="{{base_url}}/file/{{hash}}">
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:image" content="{{base_url}}/file/{{hash}}">
+  {% if is_local %}
+    {% switch file_type %}
+      {% case 0 %}{# image #}
+        <meta property="og:image" content="{{base_url}}/file/{{hash}}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="{{base_url}}/file/{{hash}}">
 
-      <meta property="og:image:height" content="{{height}}"/>
-      <meta property="og:image:width" content="{{width}}"/>
-    {% case 1 %}{# video #}
-      <meta name="twitter:card" content="player">
-      <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
+        <meta property="og:image:height" content="{{height}}"/>
+        <meta property="og:image:width" content="{{width}}"/>
+      {% case 1 %}{# video #}
+        <meta name="twitter:card" content="player">
+        <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
 
-      <meta name="twitter:player:width" content="{{width}}">
-      <meta name="twitter:player:height" content="{{height}}">
-      <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
-      <meta name="twitter:player:stream:content_type" content="{{mime}}">
+        <meta name="twitter:player:width" content="{{width}}">
+        <meta name="twitter:player:height" content="{{height}}">
+        <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
+        <meta name="twitter:player:stream:content_type" content="{{mime}}">
 
-      <meta property="og:video" content="{{base_url}}/file/{{hash}}">
-      <meta property="og:video:type" content="{{mime}}">
-      <meta property="og:video:width" content="{{width}}">
-      <meta property="og:video:height" content="{{height}}">
+        <meta property="og:video" content="{{base_url}}/file/{{hash}}">
+        <meta property="og:video:type" content="{{mime}}">
+        <meta property="og:video:width" content="{{width}}">
+        <meta property="og:video:height" content="{{height}}">
 
-      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
-      <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
-      {% case 2 %}{# audio #}
-      <meta name="twitter:card" content="player">
-      <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
+        <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+        <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+        {% case 2 %}{# audio #}
+        <meta name="twitter:card" content="player">
+        <meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
 
-      <meta name="twitter:player:width" content="100">
-      <meta name="twitter:player:height" content="100">
-      <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
-      <meta name="twitter:player:stream:content_type" content="{{mime}}">
+        <meta name="twitter:player:width" content="100">
+        <meta name="twitter:player:height" content="100">
+        <meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
+        <meta name="twitter:player:stream:content_type" content="{{mime}}">
 
-      <meta property="og:audio" content="{{base_url}}/file/{{hash}}">
-      <meta property="og:audio:type" content="{{mime}}">
+        <meta property="og:audio" content="{{base_url}}/file/{{hash}}">
+        <meta property="og:audio:type" content="{{mime}}">
 
-      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
-      <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
-      {% default %}
-      <meta name="twitter:card" content="summary">
-      <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
-      <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
-  {% endswitch %}
+        <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+        <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+        {% default %}
+        <meta name="twitter:card" content="summary">
+        <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+        <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+    {% endswitch %}
+  {% else %}
+    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+    <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+  {% endif %}
 
 {% endblock %}
 
@@ -60,16 +66,21 @@
           <h1 class="card-title">{{title}}</h1>
 
           <div>
+            {% if mime %}
             <div>Type: {{mime}}</div>
+            {% endif %}
             {% if width and height %}
             <div>Dimensions: {{width}}x{{height}}</div>
             {% endif %}
+            {% if size %}
             <div>Size: {{size|bytesize({ units: 'iec' }) }}</div>
+            {% endif %}
             {% if time_imported %}
             <div>Imported <time datetime="{{(time_imported | fromunixtime).toISOString()}}" title="{{(time_imported | fromunixtime).toISOString()}}">{{time_imported | fromunixtime | distancetonow({addSuffix: true})}}</time></div>
             {% endif %}
           </div>
 
+          {% if local_file %}
           <div>
             <a class="btn btn-square btn-outline" href="/file/{{hash}}" download title="Download file">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -83,6 +94,7 @@
               </svg>
             </a>
           </div>
+          {% endif %}
 
           
             {% for knownUrl in detailed_known_urls %}
@@ -134,50 +146,63 @@
     </div>
     <div class="flex-[999] flex flex-col min-w-[50%]">
       <div class="flex w-full h-full max-h-screen">
-        {% switch file_type %}
-          {% case 0 %} {# image #}
-            <img 
-              class="object-contain max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4" 
-              src="/file/{{hash}}"
-              height="{{height}}"
-              width="{{width}}"
-            >
-          {% case 1 %} {# video #}
-            <video 
-                controls
-                loop
-                poster="/thumbnail/{{hash}}"
+        {% if is_local %}
+          {% switch file_type %}
+            {% case 0 %} {# image #}
+              <img 
+                class="object-contain max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4" 
                 src="/file/{{hash}}"
-                type="{{mime}}"
                 height="{{height}}"
                 width="{{width}}"
-                class="inline-block mt-0 m-auto py-4 max-h-full"
-              ></video>
-          {% case 2 %} {# audio #}
-              <audio
-                controls
-                src="/file/{{hash}}"
-                type="{{mime}}"
-                class="inline-block w-full px-12 m-auto"
-              ></audio>
-          {% case 4 %} {# pdf #}
-            <embed
-              class="inline-block w-full py-4 min-h-[80vh] object-contain" 
-              src="/file/{{hash}}#navpanes=0" 
-              type="{{mime}}">
-            </embed>
-          {% default %}
-            <div class="hero h-full w-full">
+              >
+            {% case 1 %} {# video #}
+              <video 
+                  controls
+                  loop
+                  poster="/thumbnail/{{hash}}"
+                  src="/file/{{hash}}"
+                  type="{{mime}}"
+                  height="{{height}}"
+                  width="{{width}}"
+                  class="inline-block mt-0 m-auto py-4 max-h-full"
+                ></video>
+            {% case 2 %} {# audio #}
+                <audio
+                  controls
+                  src="/file/{{hash}}"
+                  type="{{mime}}"
+                  class="inline-block w-full px-12 m-auto"
+                ></audio>
+            {% case 4 %} {# pdf #}
+              <embed
+                class="inline-block w-full py-4 min-h-[80vh] object-contain" 
+                src="/file/{{hash}}#navpanes=0" 
+                type="{{mime}}">
+              </embed>
+            {% default %}
+              <div class="hero h-full w-full">
+                <div class="hero-content flex-col">
+                  <div class="card">
+                    <img src="/thumbnail/{{hash}}"/>
+                  </div>
+                  <div>
+                    <h1 class="sm:text-5xl font-bold text-3xl text-center">Unsupported Filetype</h1>
+                  </div>
+                </div>
+              </div>
+          {% endswitch %}
+        {% else %}
+          <div class="hero h-full w-full">
               <div class="hero-content flex-col">
                 <div class="card">
-                  <img src="/thumbnail/{{hash}}" class="" />
+                  <img src="/thumbnail/{{hash}}"/>
                 </div>
                 <div>
-                  <h1 class="sm:text-5xl font-bold text-3xl text-center">Unsupported Filetype</h1>
+                  <h1 class="sm:text-5xl font-bold text-3xl text-center">File Unavailable</h1>
                 </div>
               </div>
             </div>
-        {% endswitch %}
+        {% endif %}
       </div>
     </div>
   </div>

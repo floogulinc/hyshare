@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Header,
+  NotFoundException,
   Param,
   Render,
   UseGuards,
@@ -88,8 +89,13 @@ export class ViewFileController {
             service_names_to_statuses_to_display_tags,
             is_inbox,
             is_trashed,
+            is_local,
             notes,
           }) => {
+            if (this.appConfig.errorNonLocal && !is_local) {
+              throw new NotFoundException();
+            }
+
             const tag_services_to_tags = this.getTags(
               service_names_to_statuses_to_display_tags,
             );
@@ -132,6 +138,7 @@ export class ViewFileController {
               ),
               is_inbox,
               is_trashed,
+              is_local,
               notes,
               tag_services_to_tags,
               file_type,

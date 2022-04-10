@@ -139,4 +139,7 @@ export class AppConfig {
 
   @IsObject()
   public readonly redirects: Record<string, string> = {};
+
+  @IsBoolean()
+  public readonly errorNonLocal: boolean = false;
 }
