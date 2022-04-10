@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ViewFileController } from './view-file.controller';
 
-describe('ViewFileController', () => {
+xdescribe('ViewFileController', () => {
   let controller: ViewFileController;
 
   beforeEach(async () => {

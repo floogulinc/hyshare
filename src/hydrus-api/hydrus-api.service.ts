@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { AxiosRequestHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { map, Observable } from 'rxjs';
-import { EnvConfig } from 'src/config';
+import { EnvConfig } from '../config';
 import { HydrusFileFromAPI } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-sort-type';
 

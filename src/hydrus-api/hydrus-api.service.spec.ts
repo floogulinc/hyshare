@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HydrusApiService } from './hydrus-api.service';
 
-describe('HydrusApiService', () => {
+xdescribe('HydrusApiService', () => {
   let service: HydrusApiService;
 
   beforeEach(async () => {
