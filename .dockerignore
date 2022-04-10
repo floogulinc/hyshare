@@ -39,3 +39,6 @@ lerna-debug.log*
 .hyshare.json
 
 Dockerfile
+
+# TypeScript cache
+*.tsbuildinfo

@@ -37,3 +37,6 @@ lerna-debug.log*
 # Environment Files
 .env
 .hyshare.json
+
+# TypeScript cache
+*.tsbuildinfo
