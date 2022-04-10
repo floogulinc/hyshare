@@ -5,14 +5,14 @@ export function getTagValue(tag: string) {
   if (!tag.includes(':')) {
     return tag;
   }
-  return tag.split(':')[1].toLowerCase();
+  return tag.split(':').slice(1).join(':');
 }
 
 export function getNamespace(tag: string): string {
   if (!tag?.includes(':')) {
     return '';
   }
-  return tag.split(':')[0].toLowerCase();
+  return tag.split(':')[0];
 }
 
 export function firstNamespaceTag(tags: string[], namespace: string) {
