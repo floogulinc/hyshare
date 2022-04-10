@@ -5,6 +5,7 @@ import {
   Header,
   Param,
   Render,
+  Res,
   UseInterceptors,
 } from '@nestjs/common';
 import { IsNotEmpty, IsString, NotContains } from 'class-validator';
@@ -12,6 +13,7 @@ import ms from 'ms';
 import { map, retry } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
+import { Response } from 'express';
 
 class GalleryParams {
   @IsNotEmpty()
@@ -52,9 +54,15 @@ export class GalleryController {
 
   @Get(':tag')
   @UseInterceptors(CacheInterceptor)
-  @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('gallery')
-  getGallery(@Param() params: GalleryParams) {
+  getGallery(
+    @Param() params: GalleryParams,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.setHeader(
+      'Cache-Control',
+      `public, max-age=${this.appConfig.galleryBrowserCacheMaxAge}`,
+    );
     return this.getHashes(params.tag);
   }
 

@@ -12,6 +12,7 @@ import {
   IsEnum,
   IsHash,
   IsObject,
+  IsInt,
 } from 'class-validator';
 import { UrlType } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-api/hydrus-sort-type';
@@ -44,10 +45,6 @@ export class EnvConfig {
 
   @IsString()
   public readonly HYSHARE_REQUEST_LOG_FORMAT: string = 'common';
-
-  @IsNumber()
-  @Min(0)
-  public readonly HYSHARE_CACHE_TTL: number = 60;
 
   @IsNumber()
   @Min(0)
@@ -142,4 +139,19 @@ export class AppConfig {
 
   @IsBoolean()
   public readonly errorNonLocal: boolean = false;
+
+  @IsNumber()
+  public readonly serverCacheTTL: number = 300;
+
+  @IsInt()
+  @Min(0)
+  public readonly serverCacheMax: number = 100;
+
+  @IsInt()
+  @Min(0)
+  public readonly galleryBrowserCacheMaxAge: number = 3600;
+
+  @IsInt()
+  @Min(0)
+  public readonly viewFileBrowserCacheMaxAge: number = 3600;
 }

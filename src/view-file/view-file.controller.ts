@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Param,
   Render,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,6 +27,7 @@ import {
   flattenTagServices,
   getTagValue,
 } from 'src/tag-utils';
+import { Response } from 'express';
 
 class ViewFilesParams {
   @IsHash('sha256')
@@ -92,6 +94,8 @@ export class ViewFileController {
             is_local,
             notes,
           }) => {
+            console.log(hash);
+
             if (this.appConfig.errorNonLocal && !is_local) {
               throw new NotFoundException();
             }
@@ -152,9 +156,15 @@ export class ViewFileController {
   @Get(':hash')
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
-  @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('view-file')
-  getGallery(@Param() params: ViewFilesParams) {
+  getGallery(
+    @Param() params: ViewFilesParams,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.setHeader(
+      'Cache-Control',
+      `public, max-age=${this.appConfig.viewFileBrowserCacheMaxAge}`,
+    );
     return this.getFileData(params.hash);
   }
 
@@ -168,9 +178,15 @@ export class ViewFileController {
   @Get(':hash/embed-video')
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
-  @Header('Cache-Control', `public, max-age=${ms('60m') / 1000}`)
   @Render('embed-video')
-  getEmbedVideo(@Param() params: ViewFilesParams) {
+  getEmbedVideo(
+    @Param() params: ViewFilesParams,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.setHeader(
+      'Cache-Control',
+      `public, max-age=${this.appConfig.viewFileBrowserCacheMaxAge}`,
+    );
     return params;
   }
 }

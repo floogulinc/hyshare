@@ -56,10 +56,11 @@ import { AppConfig, EnvConfig } from './config';
     }),
     CacheModule.registerAsync({
       imports: [AppModule],
-      useFactory: async (env: EnvConfig) => ({
-        ttl: env.HYSHARE_CACHE_TTL,
+      useFactory: async (env: EnvConfig, appConfig: AppConfig) => ({
+        ttl: env.NODE_ENV === 'development' ? -1 : appConfig.serverCacheTTL,
+        max: appConfig.serverCacheMax,
       }),
-      inject: [EnvConfig],
+      inject: [EnvConfig, AppConfig],
     }),
   ],
   controllers: [AppController, GalleryController, ViewFileController],

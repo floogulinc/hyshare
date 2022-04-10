@@ -77,7 +77,6 @@ Here are all the environment config items (they are optional unless stated other
 | `HYSHARE_HYDRUS_API_TIMEOUT` | `30000` | The timeout in ms hyshare will wait for requests to the Hydrus API. A value of `0` disables the timeout. |
 | `HYSHARE_LOG_REQUESTS` | `false` | Whether hyshare should log each request to the console. If `true` hyshare will use [morgan](https://www.npmjs.com/package/morgan) to log every request. |
 | `HYSHARE_REQUEST_LOG_FORMAT` | `common` | The morgan format to use for logged requests. See the list of [pre-defined formats](https://www.npmjs.com/package/morgan#predefined-formats) or create your own with the default [tokens](https://www.npmjs.com/package/morgan#tokens) |
-| `HYSHARE_CACHE_TTL` | `60` | The length of time in minutes hyshare should cache responses. |
 | `HYSHARE_BASE_URL` |  | The base URL hyshare is served on. Used for twitter embed meta tags that require an absolute URL. |
 | `HYSHARE_THUMBNAIL_DIR` |  | The absolute directory where Hydrus thumbnails are stored. Providing this will allow hyshare to serve thumbnails directly from disk where possible instead of going through the Hydrus API. This directory should be the one containing `t00` through `tff` subdirectories with the thumbnails inside them. By default this would be the `client_files` directory in the `db` directory in a regular Hydrus install. |
 | `NODE_ENV` | `production` | (development only) The environment type hyshare is running in (set to `development` to have nunjucks watch for changes to the templates). |
@@ -112,6 +111,11 @@ Here are the app config items (they are all optional):
 | `blockedHashes` | `[]` | An array of SHA256 hashes that will be blocked from galleries, the file view, thumbnail, and file requests. |
 | `errorNonLocal` | `false` | A boolean indicating whether hyshare should return a 404 Not Found error when a non-local file is attempted to be accessed at the `/view` path. A non-local file is any where Hydrus doesn't have the actual file, so any files you've never imported and those that have been permanently deleted. This does not include files in the trash. When set to false, information about deleted files or files that you've never imported but have tags in a tag service (like the PTR) will be returned. |
 | `redirects` | `{}` | A JSON object of paths to URLs for custom redirects. Only one one level of path is supported (eg no `/`s). For example `{ "test": "https://example.com" }` will produce a redirect from `/test` to `https://example.com`. Relative URLs are also supported for the redirect target. |
+| `serverCacheTTL` | `300` (5 min) | The length of time in seconds hyshare should cache generated responses on the server. This applies to gallery and file views. |
+| `serverCacheMax` | `100` | The maximum number of responses hyshare can cache. |
+| `galleryBrowserCacheMaxAge` | `3600` (1 hour) | The `max-age` to send in the `Cache-Control` header for gallery pages. Instructs the browser and intermediate caches how long to consider gallery pages fresh for. |
+| `viewFileBrowserCacheMaxAge` | `3600` (1 hour) | The `max-age` to send in the `Cache-Control` header for file view pages. Instructs the browser and intermediate caches how long to consider file view pages fresh for. |
+
 
 ## Running as a service
 
