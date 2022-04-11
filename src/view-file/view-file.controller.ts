@@ -155,14 +155,7 @@ export class ViewFileController {
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   @Render('view-file')
-  getGallery(
-    @Param() params: ViewFilesParams,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    res.setHeader(
-      'Cache-Control',
-      `public, max-age=${this.appConfig.viewFileBrowserCacheMaxAge}`,
-    );
+  getGallery(@Param() params: ViewFilesParams) {
     return this.getFileData(params.hash);
   }
 
@@ -177,14 +170,7 @@ export class ViewFileController {
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   @Render('embed-video')
-  getEmbedVideo(
-    @Param() params: ViewFilesParams,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    res.setHeader(
-      'Cache-Control',
-      `public, max-age=${this.appConfig.viewFileBrowserCacheMaxAge}`,
-    );
+  getEmbedVideo(@Param() params: ViewFilesParams) {
     return params;
   }
 }

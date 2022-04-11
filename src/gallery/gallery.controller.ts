@@ -55,14 +55,7 @@ export class GalleryController {
   @Get(':tag')
   @UseInterceptors(CacheInterceptor)
   @Render('gallery')
-  getGallery(
-    @Param() params: GalleryParams,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    res.setHeader(
-      'Cache-Control',
-      `public, max-age=${this.appConfig.galleryBrowserCacheMaxAge}`,
-    );
+  getGallery(@Param() params: GalleryParams) {
     return this.getHashes(params.tag);
   }
 

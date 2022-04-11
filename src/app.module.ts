@@ -12,6 +12,7 @@ import { GalleryController } from './gallery/gallery.controller';
 import { ViewFileController } from './view-file/view-file.controller';
 import { dotenvLoader, fileLoader, TypedConfigModule } from 'nest-typed-config';
 import { AppConfig, EnvConfig } from './config';
+import { getCacheControlMiddleware } from './cache-control.middleware';
 
 @Module({
   imports: [
@@ -66,4 +67,18 @@ import { AppConfig, EnvConfig } from './config';
   controllers: [AppController, GalleryController, ViewFileController],
   providers: [HydrusApiService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor(private appConfig: AppConfig) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        getCacheControlMiddleware(this.appConfig.galleryBrowserCacheMaxAge),
+      )
+      .forRoutes(GalleryController);
+    consumer
+      .apply(
+        getCacheControlMiddleware(this.appConfig.viewFileBrowserCacheMaxAge),
+      )
+      .forRoutes(ViewFileController);
+  }
+}
