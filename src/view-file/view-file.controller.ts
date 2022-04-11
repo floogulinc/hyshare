@@ -94,8 +94,6 @@ export class ViewFileController {
             is_local,
             notes,
           }) => {
-            console.log(hash);
-
             if (this.appConfig.errorNonLocal && !is_local) {
               throw new NotFoundException();
             }
