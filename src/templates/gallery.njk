@@ -13,17 +13,27 @@
       <span class="badge badge-lg badge-outline">{{hashes|length}} files</span>
     </div>
 
-    <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
-      {% for hash in hashes %}
-        <a href="/view/{{hash}}" class="bordered card">
-          <img 
-              src="/thumbnail/{{hash}}" 
-              class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
-              loading="lazy"
-            >
-        </a>
-      {% endfor %}
-    </div>
+    {% for hash in hashes %}
+      {% if loop.first %}
+        <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
+      {% endif %}
+      <a href="/view/{{hash}}" class="bordered card">
+        <img 
+            src="/thumbnail/{{hash}}" 
+            class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
+            loading="lazy"
+          >
+      </a>
+      {% if loop.last %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="hero h-full w-full">
+        <div class="hero-content flex-col">
+          <h1 class="sm:text-5xl font-bold text-3xl text-center">No Files Found</h1>
+        </div>
+      </div>
+    {% endfor %}
 
   </div>
 
