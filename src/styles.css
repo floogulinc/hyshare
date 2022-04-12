@@ -95,3 +95,9 @@ html[no-rounded] {
     --er: 0 100% 50%;
   }
 }
+
+@layer components {
+  ruffle-player {
+    @apply w-full h-full;
+  }
+}

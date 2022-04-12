@@ -7,6 +7,8 @@
     {% include "view-audio.njk" %}
   {% elif file_type == HydrusFileType.PDF %} {# pdf #}
     {% include "view-pdf.njk" %}
+  {% elif file_type == HydrusFileType.Flash %} {# pdf #}
+    {% include "view-flash.njk" %}
   {% else %}
     {% include "view-unsupported.njk" %}
   {% endif %}

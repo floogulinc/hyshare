@@ -1,0 +1,27 @@
+{% extends 'view-file-base.njk' %}
+
+{% block media %}
+  <div class="w-full max-h-screen py-4">
+    <div 
+      id="ruffle-container" 
+      class="max-h-full mx-auto max-w-full"
+      style="width: {{width}}px; aspect-ratio: {{width}} / {{height}}"
+    >
+    </div>
+  </div>
+{% endblock %}
+
+{% block endbody %}
+{{ super() }}
+<script>
+  window.RufflePlayer = window.RufflePlayer || {};
+  window.addEventListener("load", (event) => {
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+    const container = document.getElementById("ruffle-container");
+    container.appendChild(player);
+    player.load("/file/{{hash}}");
+  });
+</script>
+<script src="/ruffle/ruffle.js"></script>
+{% endblock %}

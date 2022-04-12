@@ -12,6 +12,7 @@ import { formatDistanceToNow, fromUnixTime } from 'date-fns';
 import onHeaders from 'on-headers';
 import { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
+import { HydrusFileType } from './hydrus-file';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version, homepage, name } = require('../package.json');
@@ -73,10 +74,20 @@ async function bootstrap() {
     .addGlobal('fullThumbs', appConfig.fullThumbs)
     .addGlobal('noRounded', appConfig.noRounded)
     .addGlobal('blackDarkTheme', appConfig.blackDarkTheme)
-    .addGlobal('base_url', env.HYSHARE_BASE_URL);
+    .addGlobal('base_url', env.HYSHARE_BASE_URL)
+    .addGlobal('HydrusFileType', HydrusFileType);
 
   app.useStaticAssets(assets, {
     maxAge: '1d',
+  });
+
+  app.useStaticAssets(assets, {
+    maxAge: '1d',
+  });
+
+  app.useStaticAssets(join(__dirname, '../node_modules/@ruffle-rs/ruffle'), {
+    maxAge: '1d',
+    prefix: '/ruffle/',
   });
   app.setBaseViewsDir(views);
   app.setViewEngine('njk');
