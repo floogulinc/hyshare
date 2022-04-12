@@ -1,0 +1,14 @@
+{% extends 'view-file-base.njk' %}
+
+{% block media %}
+<div class="hero h-full w-full">
+  <div class="hero-content flex-col">
+    <div class="card">
+      <img src="/thumbnail/{{hash}}"/>
+    </div>
+    <div>
+      <h1 class="sm:text-5xl font-bold text-3xl text-center">Unsupported Filetype</h1>
+    </div>
+  </div>
+</div>
+{% endblock %}

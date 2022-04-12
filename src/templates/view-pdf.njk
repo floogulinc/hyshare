@@ -1,0 +1,9 @@
+{% extends 'view-file-base.njk' %}
+
+{% block media %}
+ <embed
+  class="inline-block w-full py-4 min-h-[80vh] object-contain" 
+  src="/file/{{hash}}#navpanes=0" 
+  type="{{mime}}">
+</embed>
+{% endblock %}

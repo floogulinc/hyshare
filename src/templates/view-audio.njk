@@ -1,0 +1,26 @@
+{% extends 'view-file-base.njk' %}
+
+{% block meta %}
+<meta name="twitter:card" content="player">
+<meta name="twitter:player" content="{{base_url}}/view/{{hash}}/embed-video">
+
+<meta name="twitter:player:width" content="100">
+<meta name="twitter:player:height" content="100">
+<meta name="twitter:player:stream" content="{{base_url}}/file/{{hash}}">
+<meta name="twitter:player:stream:content_type" content="{{mime}}">
+
+<meta property="og:audio" content="{{base_url}}/file/{{hash}}">
+<meta property="og:audio:type" content="{{mime}}">
+
+<meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+<meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+{% endblock %}
+
+{% block media %}
+<audio
+  controls
+  src="/file/{{hash}}"
+  type="{{mime}}"
+  class="inline-block w-full px-12 m-auto"
+></audio>
+{% endblock %}

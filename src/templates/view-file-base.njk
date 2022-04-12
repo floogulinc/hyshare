@@ -1,0 +1,126 @@
+{% extends 'base.njk' %}
+
+{% block head %}
+  <meta property="og:url" content="{{base_url}}/view/{{hash}}">
+  {% block meta %}
+    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+    <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+  {% endblock %}
+{% endblock %}
+
+{% block body %}
+
+<div class="px-4 grow flex w-full">
+  <div class="flex gap-x-4 flex-wrap-reverse grow w-full">
+    <div class="flex-auto w-72 flex flex-col my-4">
+      <div class="card bg-base-300 compact">
+        <div class="card-body">
+          <h1 class="card-title">{{title}}</h1>
+
+          <div>
+            {% if mime %}
+            <div>Type: {{mime}}</div>
+            {% endif %}
+            {% if width and height %}
+            <div>Dimensions: {{width}}x{{height}}</div>
+            {% endif %}
+            {% if size %}
+            <div>Size: {{size|bytesize({ units: 'iec' }) }}</div>
+            {% endif %}
+            {% if time_imported %}
+            <div>Imported <time datetime="{{(time_imported | fromunixtime).toISOString()}}" title="{{(time_imported | fromunixtime).toISOString()}}">{{time_imported | fromunixtime | distancetonow({addSuffix: true})}}</time></div>
+            {% endif %}
+          </div>
+
+          {% if is_local %}
+          <div>
+            <a class="btn btn-square btn-outline" href="/file/{{hash}}" download title="Download file">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a class="btn btn-square btn-outline" href="/file/{{hash}}" target="_blank" title="Open in new tab">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+              </svg>
+            </a>
+          </div>
+          {% endif %}
+
+          
+            {% for knownUrl in detailed_known_urls %}
+              {% if loop.first %}
+                <div>
+                <h2 class="font-medium">Known URLs</h2>
+                <ul>
+              {% endif %}
+              <li><a class="link" href="{{knownUrl.normalised_url}}" target="_blank" rel="noopener noreferrer">{{knownUrl.match_name}}</a></li>
+              {% if loop.last %}
+                </ul>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+          
+            {% for name, note in notes %}
+              {% if loop.first %}
+                <div>
+                <h2 class="font-medium">Notes</h2>
+                <ul>
+              {% endif %}
+              <li><label for="notes-{{loop.index}}" class="link modal-button">{{name}}</label></li>
+              {% if loop.last %}
+                </div>
+                </ul>
+              {% endif %}
+            {% endfor %}
+
+          
+            {% for serviceName, tags in tag_services_to_tags %}
+              {% if loop.first %}
+                <div>
+               <h2 class="font-medium">Tags</h2>
+              {% endif %}
+              <h3 class="font-medium">{{serviceName}}</h3>
+              <ul>
+                {% for tag in tags %}
+                  <li class="tag-text break-all" tag="{{tag}}">{{tag}}</li>
+                {% endfor %}
+              </ul>
+              {% if loop.last %}
+                </div>
+              {% endif %}
+            {% endfor %}
+
+        </div>
+      </div>
+    </div>
+    <div class="flex-[999] flex flex-col min-w-[50%]">
+      <div class="flex w-full h-full max-h-screen">
+        {% block media %}
+
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block endbody %}
+
+{% for name, note in notes %}
+  <input type="checkbox" id="notes-{{loop.index}}" class="modal-toggle">
+  <div class="modal">
+    <div class="modal-box relative">
+      <label for="notes-{{loop.index}}" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+      <h3 class="text-lg font-bold">{{name}}</h3>
+      <p class="py-4">{{note}}</p>
+    </div>
+  </div>
+{% endfor %}
+
+
+{% endblock %}
