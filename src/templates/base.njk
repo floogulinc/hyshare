@@ -17,8 +17,13 @@
 
     <meta name="apple-mobile-web-app-title" content="hyshare">
     <meta name="application-name" content="hyshare">
+    
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+    {% if blackDarkTheme %}
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+    {% else %}
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2a303c">
+    {% endif %}
     <meta name="color-scheme" content="light dark">
 
     <link href="/styles.css?v={{version}}" rel="stylesheet">
