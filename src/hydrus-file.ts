@@ -56,6 +56,7 @@ export enum HydrusFileType {
   Audio = 2,
   Flash = 3,
   PDF = 4,
+  TIFF = 5,
   Unsupported = 99,
 }
 
@@ -103,6 +104,9 @@ export function type(mime: string): HydrusFileType {
   }
   if (['application/pdf'].includes(mime)) {
     return HydrusFileType.PDF;
+  }
+  if (['image/tiff'].includes(mime)) {
+    return HydrusFileType.TIFF;
   }
   return HydrusFileType.Unsupported;
 }

@@ -1,0 +1,29 @@
+{% extends 'view-file-base.njk' %}
+
+{% block media %}
+<img 
+  id="tiff-img"
+  class="object-contain max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4" 
+  data-src="/file/{{hash}}"
+  height="{{height}}"
+  width="{{width}}"
+>
+{% endblock %}
+
+{% block endbody %}
+{{ super() }}
+<script src="/utif/utif.js"></script>
+<script>
+window.addEventListener("load", (event) => {
+  const img = document.getElementById("tiff-img");
+  const dataSrc = img.getAttribute("data-src");
+  const xhr = new XMLHttpRequest();  
+  UTIF._xhrs.push(xhr);  
+  UTIF._imgs.push(img);
+  xhr.open("GET", dataSrc);  
+  xhr.responseType = "arraybuffer";
+  xhr.onload = UTIF._imgLoaded;   
+  xhr.send();
+});
+</script>
+{% endblock %}

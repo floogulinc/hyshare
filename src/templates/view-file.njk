@@ -9,6 +9,8 @@
     {% include "view-pdf.njk" %}
   {% elif file_type == HydrusFileType.Flash %} {# pdf #}
     {% include "view-flash.njk" %}
+  {% elif file_type == HydrusFileType.TIFF %} {# pdf #}
+    {% include "view-tiff.njk" %}
   {% else %}
     {% include "view-unsupported.njk" %}
   {% endif %}

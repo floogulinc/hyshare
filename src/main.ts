@@ -81,13 +81,14 @@ async function bootstrap() {
     maxAge: '1d',
   });
 
-  app.useStaticAssets(assets, {
-    maxAge: '1d',
-  });
-
   app.useStaticAssets(join(__dirname, '../node_modules/@ruffle-rs/ruffle'), {
     maxAge: '1d',
     prefix: '/ruffle/',
+  });
+
+  app.useStaticAssets(join(__dirname, '../node_modules/utif'), {
+    maxAge: '1d',
+    prefix: '/utif/',
   });
   app.setBaseViewsDir(views);
   app.setViewEngine('njk');
