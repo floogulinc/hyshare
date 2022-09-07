@@ -20,7 +20,7 @@ jobs:
       run: npm ci
     - run: npm run build
     - run: npm run tailwind:build
-    - name: Publish to GitHub Packages
+    - name: Publish to NPM
       run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
