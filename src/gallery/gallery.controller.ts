@@ -37,6 +37,7 @@ export class GalleryController {
           return_hashes: true,
           return_file_ids: false,
           tag_service_name: this.appConfig.tagServiceToSearch,
+          file_service_name: this.appConfig.fileServiceToSearch,
           file_sort_type: this.appConfig.defaultSortType,
           file_sort_asc: this.appConfig.defaultSortAsc,
         },

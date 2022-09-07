@@ -96,6 +96,7 @@ Here are the app config items (they are all optional):
 | `hiddenNamespaces` | `["hyshare"]` | An array of namespaces to hide in the file view. |
 | `tagServiceToSearch` | | The tag service name to use for the gallery search. By default this searches all tag services. It is recommended to use a tag service that is not a public tag repo (eg the PTR) and is not effected by public tag repo siblings and parents. If the tag service used can be effected by PTR parents or siblings someone could potentially sibling or parent a `hyshare:` tag to something else and expose your files. |
 | `tagServicesToDisplay` | `["all known tags"]` | An array of tag service names to display in the file view |
+| `fileServiceToSearch` | | The file service name to use for the gallery search. |
 | `showNotes` | `true` | A boolean indicating whether to show notes on the file view |
 | `showUrls` | `true` | A boolean indicating whether to show known URLs on the file view |
 | `urlTypesToDisplay` | `[0, 3, 4]` | An array of integers indicating which types of URLs to display in the file view. See [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#add_urls_get_url_info) for a list of URL types. |

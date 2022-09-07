@@ -90,6 +90,10 @@ export class AppConfig {
   @IsString({ each: true })
   public readonly tagServicesToDisplay: string[] = ['all known tags'];
 
+  @IsString()
+  @IsOptional()
+  public readonly fileServiceToSearch?: string;
+
   @IsBoolean()
   public readonly showNotes: boolean = true;
 
