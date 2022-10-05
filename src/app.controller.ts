@@ -32,7 +32,7 @@ export class AppController {
   constructor(
     private readonly hydrusApiService: HydrusApiService,
     private env: EnvConfig,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
   ) {}
 
   @Get()

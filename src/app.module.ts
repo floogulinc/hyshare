@@ -4,7 +4,6 @@ import {
   MiddlewareConsumer,
   Module,
   NestModule,
-  RequestMethod,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';

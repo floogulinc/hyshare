@@ -2,16 +2,13 @@ import {
   CacheInterceptor,
   Controller,
   Get,
-  Header,
   NotFoundException,
   Param,
   Render,
-  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { IsHash } from 'class-validator';
-import ms from 'ms';
 import { map, retry } from 'rxjs';
 import { BlockedHashGuard } from 'src/blocked-hash.guard';
 import { AppConfig } from 'src/config';
@@ -27,7 +24,6 @@ import {
   flattenTagServices,
   getTagValue,
 } from 'src/tag-utils';
-import { Response } from 'express';
 
 class ViewFilesParams {
   @IsHash('sha256')
