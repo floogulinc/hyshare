@@ -2,23 +2,20 @@ import {
   CacheInterceptor,
   Controller,
   Get,
-  Header,
   Param,
   Render,
-  Res,
   UseInterceptors,
 } from '@nestjs/common';
-import { IsNotEmpty, IsString, NotContains } from 'class-validator';
-import ms from 'ms';
+import { IsNotEmpty, IsString, Matches, NotContains } from 'class-validator';
 import { map, retry } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
-import { Response } from 'express';
 
 class GalleryParams {
   @IsNotEmpty()
   @IsString()
   @NotContains('*')
+  @Matches(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]*$/)
   tag: string;
 }
 
