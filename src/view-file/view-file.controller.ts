@@ -113,11 +113,14 @@ export class ViewFileController {
                 ) ?? fileTypeString
               : fileTypeString;
 
-            const firstImportTime = file_services.current
-              ? Object.values(file_services.current).find(
-                  (x) => x.time_imported,
-                )?.time_imported
-              : undefined;
+            const importTimes = file_services.current
+              ? Object.values(file_services.current)
+                  .filter((x) => !!x.time_imported)
+                  .map((x) => x.time_imported)
+              : [];
+
+            const firstImportTime =
+              importTimes.length > 0 ? Math.min(...importTimes) : undefined;
 
             return {
               hash,
