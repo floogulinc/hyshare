@@ -1,0 +1,67 @@
+{% extends 'base.njk' %}
+
+{% block head %}
+  <meta property="og:url" content="{{base_url}}{{url}}">
+  {% block meta %}
+    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="{{base_url}}/thumbnail/{{hash}}">
+    <meta name="twitter:image" content="{{base_url}}/thumbnail/{{hash}}">
+
+    <meta property="og:image" content="{{base_url}}/file/{{hash}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{base_url}}/file/{{hash}}">
+
+    <meta property="og:image:height" content="{{height}}"/>
+    <meta property="og:image:width" content="{{width}}"/>
+  {% endblock %}
+{% endblock %}
+
+{% block body %}
+
+<div class="px-4 grow flex w-full">
+  <div class="flex gap-x-4 flex-wrap-reverse grow w-full">
+    
+    <div class="flex-[999] flex flex-col min-w-[50%]">
+      <div class="flex w-full h-full max-h-screen">
+        <img 
+          class="object-contain max-h-full max-w-full h-auto w-auto inline-block m-auto mt-0 py-4" 
+          src="/file/{{hash}}"
+          height="{{height}}"
+          width="{{width}}"
+        >
+      </div>
+      <div class="btn-group">
+        <a class="btn {% if firstUrl == url %} btn-disabled {% endif %}" href="{{firstUrl}}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+          </svg>
+        </a>
+        <a class="btn {% if not prevUrl %} btn-disabled {% endif %}" href="{{prevUrl}}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </a>
+        <a class="btn" href="/comic/{{id}}">{% if volume %} Volume {{volume}} {% endif %}{% if chapter %} Chapter {{chapter}} {% endif %}Page {{page}}</a>
+        <a class="btn" class="btn {% if not nextUrl %} btn-disabled {% endif %}" href="{{nextUrl}}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </a>
+        <a class="btn {% if lastUrl == url %} btn-disabled {% endif %}" href="{{lastUrl}}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block endbody %}
+
+
+
+
+{% endblock %}

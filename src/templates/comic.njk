@@ -1,0 +1,40 @@
+{% extends 'base.njk' %}
+
+{% block head %}
+  <meta property="og:url" content="{{base_url}}/comic/{{id}}">
+  <meta property="og:description" content="hyshare comic with {{pages|length}} pages"/>
+{% endblock %}
+
+{% block body %}
+
+  <div class="container mx-auto my-8 px-4 grow">
+    <div class="flex flex-row flex-wrap items-baseline mb-4 gap-2">
+      <h1 class="text-3xl font-semibold grow">{{ title }}</h1>
+      <span class="badge badge-lg badge-outline">{{pages|length}} pages</span>
+    </div>
+
+    {% for page in pages %}
+      {% if loop.first %}
+        <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
+      {% endif %}
+      <a href="{{page.url}}" class="bordered card">
+        <img 
+            src="/thumbnail/{{page.hash}}" 
+            class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
+            loading="lazy"
+          >
+      </a>
+      {% if loop.last %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="hero h-full w-full">
+        <div class="hero-content flex-col">
+          <h1 class="sm:text-5xl font-bold text-3xl text-center">No Files Found</h1>
+        </div>
+      </div>
+    {% endfor %}
+
+  </div>
+
+{% endblock %}
