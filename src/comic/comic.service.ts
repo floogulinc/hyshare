@@ -96,10 +96,10 @@ export class ComicService {
   async getComic(id: string): Promise<Comic> {
     const comicFromCache = await this.cacheManager.get<Comic>(`comic-${id}`);
     if (comicFromCache) {
-      this.logger.log(`Comic cache HIT (${id})`);
+      this.logger.debug(`Comic cache HIT (${id})`);
       return comicFromCache;
     }
-    this.logger.log(`Comic cache MISS (${id})`);
+    this.logger.debug(`Comic cache MISS (${id})`)
     const comicFromApi = await firstValueFrom(this.getComicFromApi(id));
     this.cacheManager.set(`comic-${id}`, comicFromApi);
     return comicFromApi;
@@ -117,7 +117,6 @@ export class ComicService {
   }
 
   async getPage(id: string, pageId: ComicPageIndentifier) {
-    console.log(pageId);
     const comic = await this.getComic(id);
     const index = comic.pages.findIndex(
       (value) =>
