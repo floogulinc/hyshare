@@ -12,6 +12,8 @@ import { ViewFileController } from './view-file/view-file.controller';
 import { dotenvLoader, fileLoader, TypedConfigModule } from 'nest-typed-config';
 import { AppConfig, EnvConfig } from './config';
 import { getCacheControlMiddleware } from './cache-control.middleware';
+import { ComicController } from './comic/comic.controller';
+import { ComicService } from './comic/comic.service';
 
 @Module({
   imports: [
@@ -63,8 +65,13 @@ import { getCacheControlMiddleware } from './cache-control.middleware';
       inject: [EnvConfig, AppConfig],
     }),
   ],
-  controllers: [AppController, GalleryController, ViewFileController],
-  providers: [HydrusApiService],
+  controllers: [
+    AppController,
+    GalleryController,
+    ViewFileController,
+    ComicController,
+  ],
+  providers: [HydrusApiService, ComicService],
 })
 export class AppModule implements NestModule {
   constructor(private appConfig: AppConfig) {}
@@ -79,5 +86,8 @@ export class AppModule implements NestModule {
         getCacheControlMiddleware(this.appConfig.viewFileBrowserCacheMaxAge),
       )
       .forRoutes(ViewFileController);
+    consumer
+      .apply(getCacheControlMiddleware(this.appConfig.comicBrowserCacheMaxAge))
+      .forRoutes(ComicController);
   }
 }

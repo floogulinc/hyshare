@@ -158,4 +158,18 @@ export class AppConfig {
   @IsInt()
   @Min(0)
   public readonly viewFileBrowserCacheMaxAge: number = 3600;
+
+  @IsString()
+  public readonly comicSearchPrefix: string = 'hyshare comic:';
+
+  @IsArray()
+  @IsString({ each: true })
+  public readonly comicSearchTags: string[] = [];
+
+  @IsInt()
+  @Min(0)
+  public readonly comicBrowserCacheMaxAge: number = 3600;
+
+  @IsBoolean()
+  public readonly comicsEnabled: boolean = true;
 }

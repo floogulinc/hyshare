@@ -75,6 +75,7 @@ export class ViewFileController {
         map(
           ({
             hash,
+            file_id,
             size,
             mime,
             ext,
@@ -90,7 +91,7 @@ export class ViewFileController {
             is_local,
             notes,
           }) => {
-            if (this.appConfig.errorNonLocal && !is_local) {
+            if (!file_id || (this.appConfig.errorNonLocal && !is_local)) {
               throw new NotFoundException();
             }
 

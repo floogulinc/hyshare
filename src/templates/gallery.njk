@@ -1,18 +1,14 @@
 {% extends 'base.njk' %}
-
 {% block head %}
-  <meta property="og:url" content="{{base_url}}/gallery/{{tag}}">
+  {% if tag %}<meta property="og:url" content="{{base_url}}/gallery/{{tag}}">{% endif %}
   <meta property="og:description" content="hyshare gallery with {{hashes|length}} files"/>
 {% endblock %}
-
 {% block body %}
-
   <div class="container mx-auto my-8 px-4 grow">
     <div class="flex flex-row flex-wrap items-baseline mb-4 gap-2">
       <h1 class="text-3xl font-semibold grow">{{ title }}</h1>
       <span class="badge badge-lg badge-outline">{{hashes|length}} files</span>
     </div>
-
     {% for hash in hashes %}
       {% if loop.first %}
         <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
@@ -34,7 +30,5 @@
         </div>
       </div>
     {% endfor %}
-
   </div>
-
 {% endblock %}
