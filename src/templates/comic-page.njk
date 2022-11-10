@@ -1,10 +1,12 @@
 {% extends 'base.njk' %}
 
-{% macro pageNumString() %}{% if volume %}Volume {{volume}} {% endif %}{% if chapter %} Chapter {{chapter}} {% endif %}Page {{page}}{% endmacro %}
+{% macro thisPageNumString() %}{% if volume %}Volume {{volume}} {% endif %}{% if chapter %} Chapter {{chapter}} {% endif %}Page {{page}}{% endmacro %}
+{% macro pageNumString(p) %}{% if p.volume %}Volume {{p.volume}} {% endif %}{% if p.chapter %} Chapter {{p.chapter}} {% endif %}Page {{p.page}}{% endmacro %}
+
 
 {% block head %}
   <meta property="og:url" content="{{base_url}}{{url}}">
-  <meta property="og:description" content="{{pageNumString()}}"/>
+  <meta property="og:description" content="{{thisPageNumString()}}"/>
 
   <meta property="og:image" content="{{base_url}}/file/{{hash}}">
   <meta name="twitter:card" content="summary_large_image">
@@ -26,23 +28,23 @@
     </a>
   </div>
   <div class="btn-group mt-2 no-animation">
-    <a class="btn {% if firstUrl == url %} btn-disabled {% endif %}" href="{{firstUrl}}">
+    <a class="btn {% if firstUrl == url %} btn-disabled {% endif %}" title="{{pageNumString(first)}}" href="{{firstUrl}}">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
       </svg>
     </a>
-    <a class="btn {% if not prevUrl %} btn-disabled {% endif %}" href="{{prevUrl}}">
+    <a class="btn {% if not prev %} btn-disabled {% endif %}" {% if prev %}title="{{pageNumString(prev)}}" href="{{prevUrl}}"{% endif %}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
       </svg>
     </a>
-    <a class="btn shrink" href="/comic/{{id}}">{{pageNumString()}}</a>
-    <a class="btn {% if not nextUrl %} btn-disabled {% endif %}" href="{{nextUrl}}">
+    <a class="btn shrink" href="/comic/{{id}}" title="{{title}}">{{thisPageNumString()}}</a>
+    <a class="btn {% if not next %} btn-disabled {% endif %}" {% if next %}title="{{pageNumString(next)}}" href="{{nextUrl}}"{% endif %}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
       </svg>
     </a>
-    <a class="btn {% if lastUrl == url %} btn-disabled {% endif %}" href="{{lastUrl}}">
+    <a class="btn {% if lastUrl == url %} btn-disabled {% endif %}" title="{{pageNumString(last)}}" href="{{lastUrl}}">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
       </svg>
