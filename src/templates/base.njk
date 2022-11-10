@@ -12,12 +12,9 @@
       <title>hyshare</title>
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-
     <meta name="apple-mobile-web-app-title" content="hyshare">
     <meta name="application-name" content="hyshare">
-    
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
     {% if blackDarkTheme %}
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
@@ -25,22 +22,17 @@
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2a303c">
     {% endif %}
     <meta name="color-scheme" content="light dark">
-
     <link href="/styles.css?v={{version}}" rel="stylesheet">
-
     <meta property="og:site_name" content="hyshare">
     {% block head %}{% endblock %}
   </head>
   <body class="flex flex-col min-h-screen w-full">
     {% block body %}{% endblock %}
-
     <footer class="footer footer-center p-4 bg-base-300 text-base-content">
       <div>
         <p>Powered by <a class="link link-hover" href="{{homepage}}">{{appname}}</a> v{{version}}</p>
       </div>
     </footer>
-
     {% block endbody %}{% endblock %}
   </body>
-  
 </html>

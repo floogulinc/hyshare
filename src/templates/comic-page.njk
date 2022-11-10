@@ -4,19 +4,16 @@
 
 {% block head %}
   <meta property="og:url" content="{{base_url}}{{url}}">
-
   <meta property="og:description" content="{{pageNumString()}}"/>
 
   <meta property="og:image" content="{{base_url}}/file/{{hash}}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="{{base_url}}/file/{{hash}}">
-
   <meta property="og:image:height" content="{{height}}"/>
   <meta property="og:image:width" content="{{width}}"/>
 {% endblock %}
 
 {% block body %}
-
 <div class="px-4 py-4 flex w-full h-[calc(100vh-52px)] flex-col place-items-center justify-center" >
   <div class="flex max-h-[calc(100%-48px)]">
     <a href="{{nextUrl or lastUrl}}" class="w-full h-full">
@@ -52,5 +49,4 @@
     </a>
   </div> 
 </div>
-
 {% endblock %}
