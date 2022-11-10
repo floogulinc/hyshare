@@ -120,6 +120,8 @@ Here are the app config items (they are all optional):
 | `comicSearchPrefix` | `hyshare comic:` | The prefix to add to the requested comic name. For example by default when `/comic/test` is requested, hyshare will search Hydrus for `hyshare comic:test`. |
 | `comicSearchTags` | `[]` | An array of additional tags to add to each comic search. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for what can be used here. |
 | `comicBrowserCacheMaxAge` | `3600` (1 hour) | The `max-age` to send in the `Cache-Control` header for file comic pages. Instructs the browser and intermediate caches how long to consider file view pages fresh for. |
+| `comicTitleFromNamespace` | `true` | A boolean indicating whether to try to determine a title for the comic from the first tag with a title namespace, configured below, in the first page of the comic. If this is `false` or no title tag is found it falls back to comic tag from the URL. |
+| `comicTitleNamespace` | `title` | The namespace to use to determine a comic's title. |
 
 ## Running as a service
 

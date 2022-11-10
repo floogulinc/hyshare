@@ -46,6 +46,16 @@ export class ComicService {
     };
   }
 
+  getTitle(page: ComicPage) {
+    const tagServices = serviceNamesToCurrentTags(
+      page.service_names_to_statuses_to_display_tags,
+    );
+
+    const tags = flattenTagServices(tagServices);
+
+    return getTagValue(firstNamespaceTag(tags, 'title'));
+  }
+
   collator = new Intl.Collator(undefined, {
     numeric: true,
     sensitivity: 'variant',
@@ -65,7 +75,7 @@ export class ComicService {
       .sort((a, b) => this.compareTag(a.volume, b.volume));
   }
 
-  getComicFromApi(id: string): Observable<Comic> {
+  getComicPagesFromApi(id: string): Observable<ComicPage[]> {
     return this.hydrusApiService
       .searchFiles(
         [
@@ -89,7 +99,6 @@ export class ComicService {
           metadata.map(this.processComicPage).filter((p) => !!p.page),
         ),
         map((pages) => this.sortPages(pages)),
-        map((pages) => ({ title: id, pages })),
       );
   }
 
@@ -99,8 +108,16 @@ export class ComicService {
       this.logger.debug(`Comic cache HIT (${id})`);
       return comicFromCache;
     }
-    this.logger.debug(`Comic cache MISS (${id})`)
-    const comicFromApi = await firstValueFrom(this.getComicFromApi(id));
+    this.logger.debug(`Comic cache MISS (${id})`);
+    const pages = await firstValueFrom(this.getComicPagesFromApi(id));
+    const title =
+      this.appConfig.comicTitleFromNamespace && pages[0]
+        ? this.getTitle(pages[0]) ?? id
+        : id;
+    const comicFromApi = {
+      title,
+      pages,
+    };
     this.cacheManager.set(`comic-${id}`, comicFromApi);
     return comicFromApi;
   }

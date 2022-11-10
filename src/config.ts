@@ -172,4 +172,10 @@ export class AppConfig {
 
   @IsBoolean()
   public readonly comicsEnabled: boolean = true;
+
+  @IsBoolean()
+  public readonly comicTitleFromNamespace: boolean = true;
+
+  @IsString()
+  public readonly comicTitleNamespace: string = 'title';
 }
