@@ -91,6 +91,7 @@ export class ComicController {
     const comic = await this.comicService.getComic(id);
     const pages = comic.pages.map((page) => this.processPageData(page, id));
     return {
+      id,
       title: comic.title,
       pages,
     };
