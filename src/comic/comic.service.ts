@@ -27,12 +27,16 @@ export class ComicService {
 
   private readonly logger = new Logger(ComicService.name);
 
-  processComicPage(file: HydrusFileFromAPI): ComicPage {
+  getFlatTags(file: HydrusFileFromAPI) {
+    const serviceNames = this.appConfig.comicTagServices;
     const tagServices = serviceNamesToCurrentTags(
       file.service_names_to_statuses_to_display_tags,
     );
+    return serviceNames.map((sn) => tagServices[sn] ?? []).flat();
+  }
 
-    const tags = flattenTagServices(tagServices);
+  processComicPage(file: HydrusFileFromAPI): ComicPage {
+    const tags = this.getFlatTags(file);
 
     const volume = getTagValue(firstNamespaceTag(tags, 'volume'));
     const chapter = getTagValue(firstNamespaceTag(tags, 'chapter'));
@@ -47,11 +51,7 @@ export class ComicService {
   }
 
   getTitle(page: ComicPage) {
-    const tagServices = serviceNamesToCurrentTags(
-      page.service_names_to_statuses_to_display_tags,
-    );
-
-    const tags = flattenTagServices(tagServices);
+    const tags = this.getFlatTags(page);
 
     return getTagValue(firstNamespaceTag(tags, 'title'));
   }
@@ -96,7 +96,7 @@ export class ComicService {
             : of({ metadata: [] }),
         ),
         map(({ metadata }) =>
-          metadata.map(this.processComicPage).filter((p) => !!p.page),
+          metadata.map((p) => this.processComicPage(p)).filter((p) => !!p.page),
         ),
         map((pages) => this.sortPages(pages)),
       );

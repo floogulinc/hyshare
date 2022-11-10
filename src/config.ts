@@ -178,4 +178,8 @@ export class AppConfig {
 
   @IsString()
   public readonly comicTitleNamespace: string = 'title';
+
+  @IsArray()
+  @IsString({ each: true })
+  public readonly comicTagServices: string[] = ['all known tags'];
 }

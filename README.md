@@ -122,6 +122,7 @@ Here are the app config items (they are all optional):
 | `comicBrowserCacheMaxAge` | `3600` (1 hour) | The `max-age` to send in the `Cache-Control` header for file comic pages. Instructs the browser and intermediate caches how long to consider file view pages fresh for. |
 | `comicTitleFromNamespace` | `true` | A boolean indicating whether to try to determine a title for the comic from the first tag with a title namespace, configured below, in the first page of the comic. If this is `false` or no title tag is found it falls back to comic tag from the URL. |
 | `comicTitleNamespace` | `title` | The namespace to use to determine a comic's title. |
+| `comicTagServices` | `["all known tags"]` | An array of tag service names that will be used for comic title, volume, chapter, and page tags. They will be used in the order given. |
 
 ## Running as a service
 
