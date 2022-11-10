@@ -6,8 +6,7 @@ export interface ComicPageIndentifier {
   page: string;
 }
 
-export interface ComicPage extends HydrusFileFromAPI, ComicPageIndentifier {
-}
+export interface ComicPage extends HydrusFileFromAPI, ComicPageIndentifier {}
 
 export interface Comic {
   title: string;

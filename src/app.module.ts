@@ -65,7 +65,12 @@ import { ComicService } from './comic/comic.service';
       inject: [EnvConfig, AppConfig],
     }),
   ],
-  controllers: [AppController, GalleryController, ViewFileController, ComicController],
+  controllers: [
+    AppController,
+    GalleryController,
+    ViewFileController,
+    ComicController,
+  ],
   providers: [HydrusApiService, ComicService],
 })
 export class AppModule implements NestModule {
@@ -81,5 +86,8 @@ export class AppModule implements NestModule {
         getCacheControlMiddleware(this.appConfig.viewFileBrowserCacheMaxAge),
       )
       .forRoutes(ViewFileController);
+    consumer
+      .apply(getCacheControlMiddleware(this.appConfig.comicBrowserCacheMaxAge))
+      .forRoutes(ComicController);
   }
 }

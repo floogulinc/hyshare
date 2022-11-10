@@ -5,6 +5,7 @@ import {
   Param,
   Query,
   Render,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -19,9 +20,9 @@ import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import { HydrusFileType, type } from 'src/hydrus-file';
 import { ComicPage, ComicPageIndentifier } from './comic';
 import { ComicService } from './comic.service';
-import querystring from 'node:querystring';
 import { Transform } from 'class-transformer';
 import qs from 'qs';
+import { ComicGuard } from './comic.guard';
 
 class ComicParams {
   @IsNotEmpty()
@@ -51,6 +52,7 @@ class ComicPageQuery implements ComicPageIndentifier {
 }
 
 @Controller('comic')
+@UseGuards(ComicGuard)
 export class ComicController {
   constructor(
     private readonly hydrusApiService: HydrusApiService,
@@ -81,7 +83,7 @@ export class ComicController {
       volume: page.volume,
       chapter: page.chapter,
       page: page.page,
-      url
+      url,
     };
   }
 

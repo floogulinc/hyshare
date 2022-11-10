@@ -17,10 +17,10 @@
       {% if loop.first %}
         <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
       {% endif %}
-      <a href="{{page.url}}" class="bordered card">
+      <a href="{{page.url}}" class="bordered card" title="{% if page.volume %}Volume {{page.volume}} {% endif %}{% if page.chapter %} Chapter {{page.chapter}} {% endif %}Page {{page.page}}">
         <img 
             src="/thumbnail/{{page.hash}}" 
-            class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
+            class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-auto"
             loading="lazy"
           >
       </a>
@@ -30,7 +30,7 @@
     {% else %}
       <div class="hero h-full w-full">
         <div class="hero-content flex-col">
-          <h1 class="sm:text-5xl font-bold text-3xl text-center">No Files Found</h1>
+          <h1 class="sm:text-5xl font-bold text-3xl text-center">No Pages Found</h1>
         </div>
       </div>
     {% endfor %}

@@ -1,6 +1,12 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { firstValueFrom, map, Observable, switchMap, take, tap } from 'rxjs';
+import { firstValueFrom, map, Observable, of, switchMap } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import { HydrusFileFromAPI, serviceNamesToCurrentTags } from 'src/hydrus-file';
@@ -18,8 +24,6 @@ export class ComicService {
     private appConfig: AppConfig,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
-
-  prefix = 'hyshare comic:';
 
   private readonly logger = new Logger(ComicService.name);
 
@@ -63,15 +67,27 @@ export class ComicService {
 
   getComicFromApi(id: string): Observable<Comic> {
     return this.hydrusApiService
-      .searchFiles([`${this.prefix}${id}`], {
-        return_hashes: true,
-        return_file_ids: false,
-      })
+      .searchFiles(
+        [
+          `${this.appConfig.comicSearchPrefix}${id}`,
+          ...this.appConfig.comicSearchTags,
+        ],
+        {
+          return_hashes: true,
+          return_file_ids: false,
+          tag_service_name: this.appConfig.tagServiceToSearch,
+          file_service_name: this.appConfig.fileServiceToSearch,
+        },
+      )
       .pipe(
         switchMap(({ hashes }) =>
-          this.hydrusApiService.getFileMetadata({ hashes }),
+          hashes.length > 0
+            ? this.hydrusApiService.getFileMetadata({ hashes })
+            : of({ metadata: [] }),
         ),
-        map(({ metadata }) => metadata.map(this.processComicPage)),
+        map(({ metadata }) =>
+          metadata.map(this.processComicPage).filter((p) => !!p.page),
+        ),
         map((pages) => this.sortPages(pages)),
         map((pages) => ({ title: id, pages })),
       );
@@ -123,6 +139,6 @@ export class ComicService {
       prev: this.processNextPrevPage(prev),
       first: this.processNextPrevPage(first),
       last: this.processNextPrevPage(last),
-    }
+    };
   }
 }
