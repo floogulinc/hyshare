@@ -16,17 +16,15 @@
 {% endblock %}
 
 {% block body %}
-<div class="px-4 py-4 flex w-full h-[calc(100vh-52px)] flex-col place-items-center justify-center" >
-  <div class="flex max-h-[calc(100%-48px)]">
-    <a href="{{nextUrl or lastUrl}}" class="w-full h-full">
+<div class="px-2 py-2 flex w-full h-[calc(100vh-3.25rem)] flex-col place-items-center justify-center" >
+    <a href="{{nextUrl or lastUrl}}" class="contents">
       <img 
-        class="max-h-full max-w-full h-auto w-auto inline-block m-auto" 
+        class="max-h-[calc(100%-3.5rem)] max-w-full h-auto w-auto" 
         src="/file/{{hash}}"
         height="{{height}}"
         width="{{width}}"
       >
     </a>
-  </div>
   <div class="btn-group mt-2 no-animation">
     <a class="btn {% if firstUrl == url %} btn-disabled {% endif %}" title="{{pageNumString(first)}}" href="{{firstUrl}}">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
