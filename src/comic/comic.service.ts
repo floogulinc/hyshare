@@ -153,4 +153,18 @@ export class ComicService {
       last: this.processNextPrevPage(last),
     };
   }
+
+  async findPage(id: string, pageId: ComicPageIndentifier) {
+    const comic = await this.getComic(id);
+    const page = comic.pages.find(
+      (value) =>
+        value.page === pageId.page &&
+        value.chapter === pageId.chapter &&
+        value.volume === pageId.volume,
+    );
+    if (!page) {
+      throw new NotFoundException();
+    }
+    return page;
+  }
 }

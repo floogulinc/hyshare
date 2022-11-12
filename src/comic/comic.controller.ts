@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Query,
+  Redirect,
   Render,
   UseGuards,
   UseInterceptors,
@@ -125,6 +126,19 @@ export class ComicController {
     return this.comicData(params.id);
   }
 
+  @Get(':id/page')
+  @Redirect()
+  @UseInterceptors(CacheInterceptor)
+  async getPageByQuery(
+    @Param() params: ComicParams,
+    @Query() query: ComicPageQuery,
+  ) {
+    const page = await this.comicService.findPage(params.id, query);
+    return {
+      url: `/comic/${params.id}/${page.hash}`,
+    };
+  }
+
   @Get(':id/:hash/data.json')
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
@@ -135,8 +149,8 @@ export class ComicController {
   @Get(':id/:hash')
   @Render('comic-page')
   @UseGuards(BlockedHashGuard)
-  @UseInterceptors(CacheInterceptor)
   getPage(@Param() params: ComicPageParams) {
     return this.pageData(params.id, params.hash);
   }
+  
 }
