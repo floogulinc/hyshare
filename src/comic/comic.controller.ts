@@ -14,6 +14,7 @@ import {
   NotContains,
   Matches,
   IsOptional,
+  IsHash,
 } from 'class-validator';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
@@ -21,8 +22,8 @@ import { HydrusFileType, type } from 'src/hydrus-file';
 import { ComicPage, ComicPageIndentifier } from './comic';
 import { ComicService } from './comic.service';
 import { Transform } from 'class-transformer';
-import qs from 'qs';
 import { ComicGuard } from './comic.guard';
+import { BlockedHashGuard } from 'src/blocked-hash.guard';
 
 class ComicParams {
   @IsNotEmpty()
@@ -30,6 +31,11 @@ class ComicParams {
   @NotContains('*')
   @Matches(/^[a-zA-Z0-9][a-zA-Z0-9-_ ]*$/)
   id: string;
+}
+
+class ComicPageParams extends ComicParams {
+  @IsHash('sha256')
+  hash: string;
 }
 
 class ComicPageQuery implements ComicPageIndentifier {
@@ -66,12 +72,6 @@ export class ComicController {
       return null;
     }
 
-    const url = this.getPageUrl(id, {
-      volume: page.volume,
-      chapter: page.chapter,
-      page: page.page,
-    });
-
     return {
       hash: page.hash,
       size: page.size,
@@ -83,7 +83,6 @@ export class ComicController {
       volume: page.volume,
       chapter: page.chapter,
       page: page.page,
-      url,
     };
   }
 
@@ -97,19 +96,9 @@ export class ComicController {
     };
   }
 
-  getPageUrl(
-    id: string,
-    pageInfo: { page: string; chapter?: string; volume?: string },
-  ) {
-    const query = qs.stringify(pageInfo, {
-      skipNulls: true,
-    });
-    return `/comic/${id}/page?${query}`;
-  }
-
-  async pageData(id: string, pageId: ComicPageIndentifier) {
+  async pageData(id: string, hash: string) {
     const { title, page, next, prev, first, last } =
-      await this.comicService.getPage(id, pageId);
+      await this.comicService.getPage(id, hash);
     const data = this.processPageData(page, id);
 
     return {
@@ -117,13 +106,9 @@ export class ComicController {
       title,
       ...data,
       next,
-      nextUrl: next && this.getPageUrl(id, next),
       prev,
-      prevUrl: prev && this.getPageUrl(id, prev),
       first,
-      firstUrl: this.getPageUrl(id, first),
       last,
-      lastUrl: this.getPageUrl(id, last),
     };
   }
 
@@ -140,16 +125,18 @@ export class ComicController {
     return this.comicData(params.id);
   }
 
-  @Get(':id/page/data.json')
+  @Get(':id/:hash/data.json')
+  @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
-  getPageData(@Param() params: ComicParams, @Query() query: ComicPageQuery) {
-    return this.pageData(params.id, query);
+  getPageData(@Param() params: ComicPageParams) {
+    return this.pageData(params.id, params.hash);
   }
 
-  @Get(':id/page')
+  @Get(':id/:hash')
   @Render('comic-page')
+  @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
-  getPage(@Param() params: ComicParams, @Query() query: ComicPageQuery) {
-    return this.pageData(params.id, query);
+  getPage(@Param() params: ComicPageParams) {
+    return this.pageData(params.id, params.hash);
   }
 }

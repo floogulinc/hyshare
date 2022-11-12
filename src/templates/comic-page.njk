@@ -5,7 +5,7 @@
 
 
 {% block head %}
-  <meta property="og:url" content="{{base_url}}{{url}}">
+  <meta property="og:url" content="{{base_url}}/comic/{{id}}/{{hash}}">
   <meta property="og:description" content="{{thisPageNumString()}}"/>
 
   <meta property="og:image" content="{{base_url}}/file/{{hash}}">
@@ -17,7 +17,7 @@
 
 {% block body %}
 <div class="px-2 py-2 flex w-full h-[calc(100vh-3.25rem)] flex-col place-items-center justify-center" >
-    <a href="{{nextUrl or lastUrl}}" class="contents">
+    <a href="/comic/{{id}}/{% if next %}{{next.hash}}{% else %}{{hash}}{% endif %}" class="contents">
       <img 
         class="max-h-[calc(100%-3.5rem)] max-w-full h-auto w-auto" 
         src="/file/{{hash}}"
@@ -26,23 +26,23 @@
       >
     </a>
   <div class="btn-group mt-2 no-animation">
-    <a class="btn {% if firstUrl == url %} btn-disabled {% endif %}" title="{{pageNumString(first)}}" href="{{firstUrl}}">
+    <a class="btn {% if first.hash == hash %} btn-disabled {% endif %}" title="{{pageNumString(first)}}" href="/comic/{{id}}/{{first.hash}}">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
       </svg>
     </a>
-    <a class="btn {% if not prev %} btn-disabled {% endif %}" {% if prev %}title="{{pageNumString(prev)}}" href="{{prevUrl}}"{% endif %}>
+    <a class="btn {% if not prev %} btn-disabled {% endif %}" {% if prev %}title="{{pageNumString(prev)}}" href="/comic/{{id}}/{{prev.hash}}"{% endif %}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
       </svg>
     </a>
     <a class="btn shrink" href="/comic/{{id}}" title="{{title}}">{{thisPageNumString()}}</a>
-    <a class="btn {% if not next %} btn-disabled {% endif %}" {% if next %}title="{{pageNumString(next)}}" href="{{nextUrl}}"{% endif %}>
+    <a class="btn {% if not next %} btn-disabled {% endif %}" {% if next %}title="{{pageNumString(next)}}" href="/comic/{{id}}/{{next.hash}}"{% endif %}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
       </svg>
     </a>
-    <a class="btn {% if lastUrl == url %} btn-disabled {% endif %}" title="{{pageNumString(last)}}" href="{{lastUrl}}">
+    <a class="btn {% if last.hash == hash %} btn-disabled {% endif %}" title="{{pageNumString(last)}}" href="/comic/{{id}}/{{last.hash}}">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
       </svg>

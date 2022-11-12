@@ -127,20 +127,16 @@ export class ComicService {
       return null;
     }
     return {
+      hash: page.hash,
       volume: page.volume,
       chapter: page.chapter,
       page: page.page,
     };
   }
 
-  async getPage(id: string, pageId: ComicPageIndentifier) {
+  async getPage(id: string, hash: string) {
     const comic = await this.getComic(id);
-    const index = comic.pages.findIndex(
-      (value) =>
-        value.page === pageId.page &&
-        value.chapter === pageId.chapter &&
-        value.volume === pageId.volume,
-    );
+    const index = comic.pages.findIndex((value) => value.hash === hash);
     if (index < 0) {
       throw new NotFoundException();
     }
