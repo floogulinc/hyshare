@@ -123,6 +123,8 @@ Here are the app config items (they are all optional):
 | `comicTitleFromNamespace` | `true` | A boolean indicating whether to try to determine a title for the comic from the first tag with a title namespace, configured below, in the first page of the comic. If this is `false` or no title tag is found it falls back to comic tag from the URL. |
 | `comicTitleNamespace` | `title` | The namespace to use to determine a comic's title. |
 | `comicTagServices` | `["all known tags"]` | An array of tag service names that will be used for comic title, volume, chapter, and page tags. They will be used in the order given. |
+| `comicFullThumbs` | `false` | A boolean indicating whether to show full thumbnails in the comic gallery view. If set to `false` thumbnails will be cropped in to fill the thumb container. If true the container will be a square unless `comicThumbAspectRatio` is set. |
+| `comicThumbAspectRatio` | | The aspect ratio for comic thumbnails. If this is unset the aspect ratio of the files will be used. Accepts any valid [CSS aspect-ratio value](https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio). If you have "thumbnail scaling" set to "scale to fill" in your Hydrus settings you should set this to the aspect ratio of your set thumbnail dimensions. This can also be used to restrict normal thumbnail to a specific aspect like `1/1.5`. |
 
 ## Running as a service
 

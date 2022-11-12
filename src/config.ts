@@ -182,4 +182,11 @@ export class AppConfig {
   @IsArray()
   @IsString({ each: true })
   public readonly comicTagServices: string[] = ['all known tags'];
+
+  @IsBoolean()
+  public readonly comicFullThumbs: boolean = false;
+
+  @IsString()
+  @IsOptional()
+  public readonly comicThumbAspectRatio?: string;
 }

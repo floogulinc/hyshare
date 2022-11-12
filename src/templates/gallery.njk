@@ -16,7 +16,7 @@
       <a href="/view/{{hash}}" class="bordered card">
         <img 
             src="/thumbnail/{{hash}}" 
-            class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
+            class="{% if appConfig.fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
             loading="lazy"
           >
       </a>

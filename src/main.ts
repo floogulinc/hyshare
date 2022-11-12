@@ -70,10 +70,7 @@ async function bootstrap() {
     .addGlobal('appname', name)
     .addGlobal('version', version)
     .addGlobal('homepage', homepage)
-    .addGlobal('embedTitle', appConfig.embedTitle)
-    .addGlobal('fullThumbs', appConfig.fullThumbs)
-    .addGlobal('noRounded', appConfig.noRounded)
-    .addGlobal('blackDarkTheme', appConfig.blackDarkTheme)
+    .addGlobal('appConfig', appConfig)
     .addGlobal('base_url', env.HYSHARE_BASE_URL)
     .addGlobal('HydrusFileType', HydrusFileType);
 

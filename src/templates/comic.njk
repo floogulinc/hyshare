@@ -23,8 +23,9 @@
       <a href="{{page.url}}" class="bordered card" title="{% if page.volume %}Volume {{page.volume}} {% endif %}{% if page.chapter %} Chapter {{page.chapter}} {% endif %}Page {{page.page}}">
         <img 
             src="/thumbnail/{{page.hash}}" 
-            class="{% if fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-auto"
+            class="{% if appConfig.comicFullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full"
             loading="lazy"
+            style="aspect-ratio: {% if appConfig.comicThumbAspectRatio %}{{appConfig.comicThumbAspectRatio}}{% elif appConfig.comicFullThumbs %}1/1{% else %}{{page.width}}/{{page.height}}{% endif %}"
           >
       </a>
       {% if loop.last %}
