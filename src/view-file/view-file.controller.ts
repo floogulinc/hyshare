@@ -68,6 +68,7 @@ export class ViewFileController {
         hashes: [hash],
         detailed_url_information: this.appConfig.showUrls,
         include_notes: this.appConfig.showNotes,
+        hide_service_names_tags: false,
       })
       .pipe(
         retry(2),

@@ -92,7 +92,10 @@ export class ComicService {
       .pipe(
         switchMap(({ hashes }) =>
           hashes.length > 0
-            ? this.hydrusApiService.getFileMetadata({ hashes })
+            ? this.hydrusApiService.getFileMetadata({
+                hashes,
+                hide_service_names_tags: false,
+              })
             : of({ metadata: [] }),
         ),
         map(({ metadata }) =>

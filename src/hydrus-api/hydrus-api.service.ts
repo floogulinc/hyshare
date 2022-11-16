@@ -72,7 +72,7 @@ export class HydrusApiService {
    * @param params.hashes (a list of hexadecimal SHA256 hashes)
    * @param params.only_return_identifiers true or false (optional, defaulting to false)
    * @param params.detailed_url_information true or false (optional, defaulting to false)
-   * @param params.hide_service_names_tags true or false (optional, defaulting to false)
+   * @param params.hide_service_names_tags true or false (optional, defaulting to false, true in v506+)
    * @param params.include_notes true or false (optional, defaulting to false)
    * @returns  A list of JSON Objects that store a variety of file metadata.
    */
