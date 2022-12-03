@@ -80,7 +80,7 @@ export class AppConfig {
 
   @IsArray()
   @IsString({ each: true })
-  public readonly hiddenNamespaces: string[] = ['hyshare'];
+  public readonly hiddenNamespaces: string[] = ['hyshare', 'hyshare comic'];
 
   @IsString()
   @IsOptional()

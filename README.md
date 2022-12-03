@@ -93,7 +93,7 @@ Here are the app config items (they are all optional):
 | `searchPrefix` | `hyshare:` | The prefix to add to the requested gallery name. For example by default when `/gallery/test` is requested, hyshare will search Hydrus for `hyshare:test`. This can be blank, which will simply search verbatim for the tag `/gallery/{tag}`. |
 | `searchTags` | `[]` | An array of additional tags to add to each gallery search. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for what can be used here. |
 | `hiddenTags` | `[]` | An array of tags to hide in the file view. |
-| `hiddenNamespaces` | `["hyshare"]` | An array of namespaces to hide in the file view. |
+| `hiddenNamespaces` | `["hyshare", "hyshare comic"]` | An array of namespaces to hide in the file view. |
 | `tagServiceToSearch` | | The tag service name to use for the gallery search. By default this searches all tag services. It is recommended to use a tag service that is not a public tag repo (eg the PTR) and is not effected by public tag repo siblings and parents. If the tag service used can be effected by PTR parents or siblings someone could potentially sibling or parent a `hyshare:` tag to something else and expose your files. |
 | `tagServicesToDisplay` | `["all known tags"]` | An array of tag service names to display in the file view |
 | `fileServiceToSearch` | | The file service name to use for the gallery search. |
