@@ -4,12 +4,17 @@ import {
   Get,
   Param,
   Render,
+  StreamableFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { IsNotEmpty, IsString, Matches, NotContains } from 'class-validator';
-import { map, retry } from 'rxjs';
+import { firstValueFrom, map, retry } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
+import { parse } from 'content-disposition';
+import { GalleryDownloadGuard } from './gallery-download.guard';
+import { createZipStream } from 'src/create-zip-stream';
 
 class GalleryParams {
   @IsNotEmpty()
@@ -46,6 +51,7 @@ export class GalleryController {
             (hash) => !this.appConfig.blockedHashes.includes(hash),
           ),
           title: tag,
+          tag,
         })),
       );
   }
@@ -61,5 +67,25 @@ export class GalleryController {
   @UseInterceptors(CacheInterceptor)
   getGalleryData(@Param() params: GalleryParams) {
     return this.getHashes(params.tag);
+  }
+
+  async filePromise(hash: string) {
+    const file = await this.hydrusApiService.getFileStream(hash);
+    const filename = parse(file.headers['content-disposition']).parameters
+      .filename as string;
+    return { stream: file.data, name: filename };
+  }
+
+  @Get(':tag/download')
+  @UseGuards(GalleryDownloadGuard)
+  async getGalleryDownload(@Param() params: GalleryParams) {
+    const { hashes } = await firstValueFrom(this.getHashes(params.tag));
+    const filePromises = hashes.map((hash) => () => this.filePromise(hash));
+    const archive = createZipStream(filePromises, { store: true });
+
+    return new StreamableFile(archive, {
+      type: 'application/zip',
+      disposition: `attachment; filename="${params.tag}.zip"`,
+    });
   }
 }

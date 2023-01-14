@@ -115,6 +115,7 @@ Here are the app config items (they are all optional):
 | `serverCacheTTL` | `300` (5 min) | The length of time in seconds hyshare should cache generated responses on the server. This applies to gallery and file views. |
 | `serverCacheMax` | `100` | The maximum number of responses hyshare can cache. |
 | `galleryBrowserCacheMaxAge` | `3600` (1 hour) | The `max-age` to send in the `Cache-Control` header for gallery pages. Instructs the browser and intermediate caches how long to consider gallery pages fresh for. |
+| `galleryDownloadEnabled` | `false` | A boolean indicating whether to allow downloading galleries as ZIP files. |
 | `viewFileBrowserCacheMaxAge` | `3600` (1 hour) | The `max-age` to send in the `Cache-Control` header for file view pages. Instructs the browser and intermediate caches how long to consider file view pages fresh for. |
 | `comicsEnabled` | `true` | A boolean indicating whether to enable the comics feature. This enables `/comic/{tag}` and `/comic/{tag}/page` routes. |
 | `comicSearchPrefix` | `hyshare comic:` | The prefix to add to the requested comic name. For example by default when `/comic/test` is requested, hyshare will search Hydrus for `hyshare comic:test`. |
