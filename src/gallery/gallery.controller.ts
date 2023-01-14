@@ -2,6 +2,7 @@ import {
   CacheInterceptor,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Render,
   StreamableFile,
@@ -79,7 +80,12 @@ export class GalleryController {
   @Get(':tag/download')
   @UseGuards(GalleryDownloadGuard)
   async getGalleryDownload(@Param() params: GalleryParams) {
-    const { hashes } = await firstValueFrom(this.getHashes(params.tag));
+    const { hashes } = await firstValueFrom(
+      this.getHashes(params.tag).pipe(retry(2)),
+    );
+    if (hashes.length < 1) {
+      throw new NotFoundException();
+    }
     const filePromises = hashes.map((hash) => () => this.filePromise(hash));
     const archive = createZipStream(filePromises, { store: true });
 
