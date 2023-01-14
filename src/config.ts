@@ -155,6 +155,9 @@ export class AppConfig {
   @Min(0)
   public readonly galleryBrowserCacheMaxAge: number = 3600;
 
+  @IsBoolean()
+  public readonly galleryDownloadEnabled: boolean = false;
+
   @IsInt()
   @Min(0)
   public readonly viewFileBrowserCacheMaxAge: number = 3600;
