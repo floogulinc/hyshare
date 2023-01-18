@@ -164,14 +164,18 @@ export function serviceNamesToCurrentTags(
   file: HydrusFileFromAPI,
   displayTags = true,
 ) {
-  if (file.tags) { // hydrus 507+
+  if (file.tags) {
+    // hydrus 507+
     return Object.fromEntries(
-      Object.entries(file.tags).map(([serviceKey, service]) => [
-        service.name,
-        displayTags ? service.display_tags[0] : service.storage_tags[0],
-      ]),
+      Object.values(file.tags)
+        .map((service) => [
+          service.name,
+          displayTags ? service.display_tags[0] : service.storage_tags[0],
+        ])
+        .filter(([, tags]) => tags),
     );
-  } else { // removed in hydrus 514
+  } else {
+    // removed in hydrus 514
     const service_names_to_statuses_to_tags = displayTags
       ? file.service_names_to_statuses_to_display_tags
       : file.service_names_to_statuses_to_tags;
