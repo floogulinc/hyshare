@@ -14,6 +14,7 @@ import { BlockedHashGuard } from 'src/blocked-hash.guard';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import {
+  HydrusFileFromAPI,
   HydrusFileType,
   serviceNamesToCurrentTags,
   ServiceNamesToStatusesToTags,
@@ -36,13 +37,9 @@ export class ViewFileController {
     private appConfig: AppConfig,
   ) {}
 
-  getTags(
-    service_names_to_statuses_to_display_tags: ServiceNamesToStatusesToTags,
-  ) {
+  getTags(file: HydrusFileFromAPI) {
     const serviceNames = this.appConfig.tagServicesToDisplay;
-    const tagServices = serviceNamesToCurrentTags(
-      service_names_to_statuses_to_display_tags,
-    );
+    const tagServices = serviceNamesToCurrentTags(file);
     const newTagServices = {};
     for (const s of serviceNames) {
       if (!tagServices[s]) {
@@ -73,83 +70,82 @@ export class ViewFileController {
       .pipe(
         retry(2),
         map(({ metadata }) => metadata[0]),
-        map(
-          ({
-            hash,
-            file_id,
-            size,
-            mime,
-            ext,
-            width,
-            height,
-            has_audio,
-            file_services,
-            time_modified,
-            detailed_known_urls,
-            service_names_to_statuses_to_display_tags,
-            is_inbox,
-            is_trashed,
-            is_local,
-            notes,
-          }) => {
-            if (!file_id || (this.appConfig.errorNonLocal && !is_local)) {
-              throw new NotFoundException();
-            }
-
-            const tag_services_to_tags = this.getTags(
-              service_names_to_statuses_to_display_tags,
-            );
-
-            const file_type = type(mime);
-            const fileTypeString =
-              file_type !== HydrusFileType.Unsupported
-                ? `${HydrusFileType[file_type]} File`
-                : 'File';
-
-            const title = this.appConfig.titleFromNamespace
-              ? getTagValue(
-                  firstNamespaceTag(
-                    flattenTagServices(tag_services_to_tags),
-                    this.appConfig.titleNamespace,
-                  ),
-                ) ?? fileTypeString
-              : fileTypeString;
-
-            const importTimes = file_services.current
-              ? Object.values(file_services.current)
-                  .filter((x) => !!x.time_imported)
-                  .map((x) => x.time_imported)
-              : [];
-
-            const firstImportTime =
-              importTimes.length > 0 ? Math.min(...importTimes) : undefined;
-
-            return {
-              hash,
-              size,
-              mime,
-              ext,
-              width,
-              height,
-              has_audio,
-              time_imported: firstImportTime,
-              time_modified,
-              detailed_known_urls: detailed_known_urls.filter(
-                ({ match_name, url_type }) =>
-                  this.appConfig.urlTypesToDisplay.includes(url_type) &&
-                  !this.appConfig.hiddenUrlClassNames.includes(match_name),
-              ),
-              is_inbox,
-              is_trashed,
-              is_local,
-              notes,
-              tag_services_to_tags,
-              file_type,
-              title,
-            };
-          },
-        ),
+        map((file) => this.processFileData(file)),
       );
+  }
+
+  private processFileData(file: HydrusFileFromAPI) {
+    const {
+      hash,
+      file_id,
+      size,
+      mime,
+      ext,
+      width,
+      height,
+      has_audio,
+      file_services,
+      time_modified,
+      detailed_known_urls,
+      is_inbox,
+      is_trashed,
+      is_local,
+      notes,
+    } = file;
+
+    if (!file_id || (this.appConfig.errorNonLocal && !is_local)) {
+      throw new NotFoundException();
+    }
+
+    const tag_services_to_tags = this.getTags(file);
+
+    const file_type = type(mime);
+    const fileTypeString =
+      file_type !== HydrusFileType.Unsupported
+        ? `${HydrusFileType[file_type]} File`
+        : 'File';
+
+    const title = this.appConfig.titleFromNamespace
+      ? getTagValue(
+          firstNamespaceTag(
+            flattenTagServices(tag_services_to_tags),
+            this.appConfig.titleNamespace,
+          ),
+        ) ?? fileTypeString
+      : fileTypeString;
+
+    const importTimes = file_services.current
+      ? Object.values(file_services.current)
+          .filter((x) => !!x.time_imported)
+          .map((x) => x.time_imported)
+      : [];
+
+    const firstImportTime =
+      importTimes.length > 0 ? Math.min(...importTimes) : undefined;
+
+    return {
+      hash,
+      size,
+      mime,
+      ext,
+      width,
+      height,
+      has_audio,
+      time_imported: firstImportTime,
+      time_modified,
+      detailed_known_urls: detailed_known_urls.filter(
+        ({ match_name, url_type }) =>
+          this.appConfig.urlTypesToDisplay.includes(url_type) &&
+          !this.appConfig.hiddenUrlClassNames.includes(match_name),
+      ),
+      is_inbox,
+      is_trashed,
+      is_local,
+      notes,
+      tag_services_to_tags,
+      file_type,
+      title,
+    };
   }
 
   @Get(':hash')

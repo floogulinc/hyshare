@@ -29,9 +29,7 @@ export class ComicService {
 
   getFlatTags(file: HydrusFileFromAPI) {
     const serviceNames = this.appConfig.comicTagServices;
-    const tagServices = serviceNamesToCurrentTags(
-      file.service_names_to_statuses_to_display_tags,
-    );
+    const tagServices = serviceNamesToCurrentTags(file);
     return serviceNames.map((sn) => tagServices[sn] ?? []).flat();
   }
 

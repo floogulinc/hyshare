@@ -30,7 +30,7 @@ export class EnvConfig {
     allow_query_components: false,
     require_tld: false,
   })
-  public readonly HYSHARE_HYDRUS_API_URL: string = 'http://localhost:45869/';
+  public readonly HYSHARE_HYDRUS_API_URL: string = 'http://localhost:45869/'; // DevSkim: ignore DS137138
 
   @IsString()
   @IsHexadecimal()

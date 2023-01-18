@@ -91,6 +91,6 @@ async function bootstrap() {
   app.setViewEngine('njk');
 
   await app.listen(env.HYSHARE_PORT);
-  logger.log(`Started http://localhost:${env.HYSHARE_PORT}`);
+  logger.log(`Started http://localhost:${env.HYSHARE_PORT}`); // DevSkim: ignore DS137138
 }
 bootstrap();
