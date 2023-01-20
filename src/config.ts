@@ -88,7 +88,7 @@ export class AppConfig {
 
   @IsArray()
   @IsString({ each: true })
-  public readonly tagServicesToDisplay: string[] = ['all known tags'];
+  public readonly tagServicesToDisplay: string[] = ['all known tags', 'my tags'];
 
   @IsString()
   @IsOptional()

@@ -21,11 +21,14 @@ import { BlockedHashGuard } from './blocked-hash.guard';
 import { join } from 'path';
 import { stat } from 'fs/promises';
 import { AppConfig, EnvConfig } from './config';
+import { lastValueFrom } from 'rxjs';
 
 class FileParams {
   @IsHash('sha256')
   hash: string;
 }
+
+const oneYearSeconds = ms('1y') / 1000;
 
 @Controller()
 export class AppController {
@@ -37,7 +40,7 @@ export class AppController {
 
   @Get()
   @Render('index')
-  @Header('Cache-Control', `public, max-age=${ms('1d') / 1000}`)
+  @Header('Cache-Control', `public, max-age=${oneYearSeconds}`)
   @UseInterceptors(CacheInterceptor)
   getIndex() {
     return;
@@ -63,14 +66,13 @@ export class AppController {
       } catch {}
     }
     try {
-      const thumb = await this.hydrusApiService.getThumbnailStream(
-        hash,
-        req.headers,
+      const thumb = await lastValueFrom(
+        this.hydrusApiService.getThumbnailStream(hash, req.headers),
       );
       res
         .status(thumb.status)
         .header(thumb.headers)
-        .setHeader('Cache-Control', `public, max-age=${ms('1y') / 1000}`);
+        .setHeader('Cache-Control', `public, max-age=${oneYearSeconds}`);
       thumb.data.pipe(res);
     } catch (error) {
       if (error.response) {
@@ -92,17 +94,17 @@ export class AppController {
     @Res() res: Response,
   ) {
     try {
-      const file = await this.hydrusApiService.getFileStream(
-        params.hash,
-        req.headers,
+      const file = await lastValueFrom(
+        this.hydrusApiService.getFileStream(params.hash, req.headers),
       );
       res
         .status(file.status)
         .header(file.headers)
         .setHeader(
           'Cache-Control',
-          `public, max-age=${ms('1y') / 1000}, immutable`,
+          `public, max-age=${oneYearSeconds}, immutable`,
         );
+      console.log(file.data);
       file.data.pipe(res);
     } catch (error) {
       if (error.response) {

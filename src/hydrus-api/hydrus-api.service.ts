@@ -1,10 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { AxiosRequestHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosRequestHeaders, AxiosRequestConfig } from 'axios';
 import { map, Observable } from 'rxjs';
 import { EnvConfig } from '../config';
 import { HydrusFileFromAPI } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-sort-type';
+import { IncomingMessage } from 'http';
 
 @Injectable()
 export class HydrusApiService {
@@ -98,9 +99,10 @@ export class HydrusApiService {
         file_ids: JSON.stringify(params.file_ids),
       };
     }
-    return this.apiGet('get_files/file_metadata', newParams).pipe(
-      map((resp) => resp.data),
-    );
+    return this.apiGet<{ metadata: HydrusFileFromAPI[] }>(
+      'get_files/file_metadata',
+      newParams,
+    ).pipe(map((resp) => resp.data));
   }
 
   /**
@@ -133,24 +135,19 @@ export class HydrusApiService {
     );
   }
 
-  public async getThumbnailStream(
-    hash: string,
-    headers?,
-  ): Promise<AxiosResponse> {
-    //this.logger.debug(`getThumbnailStream ${hash}`);
-    return this.http.axiosRef.get(this.apiUrl + 'get_files/thumbnail', {
-      responseType: 'stream',
+  public getThumbnailStream(hash: string, headers?) {
+    return this.http.get<IncomingMessage>(this.apiUrl + 'get_files/thumbnail', {
       params: { hash },
       headers: { ...headers, ...this.headers },
+      responseType: 'stream',
     });
   }
 
-  public async getFileStream(hash: string, headers?): Promise<AxiosResponse> {
-    //this.logger.debug(`getFileStream ${hash}`);
-    return this.http.axiosRef.get(this.apiUrl + 'get_files/file', {
-      responseType: 'stream',
+  public getFileStream(hash: string, headers?) {
+    return this.http.get<IncomingMessage>(this.apiUrl + 'get_files/file', {
       params: { hash },
       headers: { ...headers, ...this.headers },
+      responseType: 'stream',
     });
   }
 }

@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { IsNotEmpty, IsString, Matches, NotContains } from 'class-validator';
-import { firstValueFrom, map, retry } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map, retry } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import { parse } from 'content-disposition';
@@ -71,7 +71,9 @@ export class GalleryController {
   }
 
   async filePromise(hash: string) {
-    const file = await this.hydrusApiService.getFileStream(hash);
+    const file = await lastValueFrom(
+      this.hydrusApiService.getFileStream(hash).pipe(retry(2)),
+    );
     const filename = parse(file.headers['content-disposition']).parameters
       .filename as string;
     return { stream: file.data, name: filename };
@@ -92,6 +94,19 @@ export class GalleryController {
     return new StreamableFile(archive, {
       type: 'application/zip',
       disposition: `attachment; filename="${params.tag}.zip"`,
+    }).setErrorHandler((err, res) => {
+      // see https://github.com/nestjs/nest/issues/10681
+      // and https://github.com/nestjs/nest/pull/10895
+
+      if (res.destroyed) {
+        return;
+      }
+      if ((res as any).headersSent) {
+        (res as any).end();
+        return;
+      }
+      res.statusCode = 500;
+      res.send(err.message);
     });
   }
 }

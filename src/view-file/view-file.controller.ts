@@ -40,6 +40,7 @@ export class ViewFileController {
   getTags(file: HydrusFileFromAPI) {
     const serviceNames = this.appConfig.tagServicesToDisplay;
     const tagServices = serviceNamesToCurrentTags(file);
+    console.log(tagServices);
     const newTagServices = {};
     for (const s of serviceNames) {
       if (!tagServices[s]) {
