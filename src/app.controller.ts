@@ -104,7 +104,6 @@ export class AppController {
           'Cache-Control',
           `public, max-age=${oneYearSeconds}, immutable`,
         );
-      console.log(file.data);
       file.data.pipe(res);
     } catch (error) {
       if (error.response) {
