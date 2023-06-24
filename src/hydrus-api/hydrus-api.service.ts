@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { AxiosRequestHeaders, AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import { map, Observable } from 'rxjs';
 import { EnvConfig } from '../config';
 import { HydrusFileFromAPI } from 'src/hydrus-file';
@@ -19,7 +19,7 @@ export class HydrusApiService {
 
   apiUrl = this.hydrusApiUrl + (this.hydrusApiUrl.endsWith('/') ? '' : '/');
 
-  headers: AxiosRequestHeaders = {
+  headers = {
     'Hydrus-Client-API-Access-Key': this.hydrusApiKey,
   };
 
