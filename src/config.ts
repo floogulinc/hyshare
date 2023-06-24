@@ -97,6 +97,10 @@ export class AppConfig {
   @IsBoolean()
   public readonly showNotes: boolean = true;
 
+  @IsArray()
+  @IsString({ each: true })
+  public readonly hiddenNoteNames: string[] = [];
+
   @IsBoolean()
   public readonly showUrls: boolean = true;
 

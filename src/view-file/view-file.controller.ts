@@ -123,6 +123,21 @@ export class ViewFileController {
     const firstImportTime =
       importTimes.length > 0 ? Math.min(...importTimes) : undefined;
 
+    const filteredUrls = detailed_known_urls.filter(
+      ({ match_name, url_type }) =>
+        this.appConfig.urlTypesToDisplay.includes(url_type) &&
+        !this.appConfig.hiddenUrlClassNames.includes(match_name),
+    );
+
+    const filteredNotes = Object.fromEntries(
+      Object.entries(notes).filter(
+        ([name]) =>
+          !this.appConfig.hiddenNoteNames.includes(
+            name.replace(/ \(\d+\)$/, ''),
+          ),
+      ),
+    );
+
     return {
       hash,
       size,
@@ -133,15 +148,11 @@ export class ViewFileController {
       has_audio,
       time_imported: firstImportTime,
       time_modified,
-      detailed_known_urls: detailed_known_urls.filter(
-        ({ match_name, url_type }) =>
-          this.appConfig.urlTypesToDisplay.includes(url_type) &&
-          !this.appConfig.hiddenUrlClassNames.includes(match_name),
-      ),
+      detailed_known_urls: filteredUrls,
       is_inbox,
       is_trashed,
       is_local,
-      notes,
+      notes: filteredNotes,
       tag_services_to_tags,
       file_type,
       title,
