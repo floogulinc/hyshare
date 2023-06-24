@@ -24,7 +24,7 @@
       {% if loop.first %}
         <div class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mx-auto">
       {% endif %}
-      <a href="/view/{{hash}}" class="bordered card">
+      <a href="/view/{{hash}}" class="bordered card overflow-hidden">
         <img 
             src="/thumbnail/{{hash}}" 
             class="{% if appConfig.fullThumbs %} object-contain {% else %} object-cover {% endif %} w-full h-full aspect-square"
