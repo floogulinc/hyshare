@@ -106,6 +106,7 @@ export enum HydrusFileType {
   Flash = 3,
   PDF = 4,
   TIFF = 5,
+  SVG = 6,
   Unsupported = 99,
 }
 
@@ -156,6 +157,9 @@ export function type(mime: string): HydrusFileType {
   }
   if (['image/tiff'].includes(mime)) {
     return HydrusFileType.TIFF;
+  }
+  if (['image/svg+xml'].includes(mime)) {
+    return HydrusFileType.SVG;
   }
   return HydrusFileType.Unsupported;
 }

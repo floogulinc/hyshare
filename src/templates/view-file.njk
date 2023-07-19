@@ -1,16 +1,18 @@
 {% if is_local %}
-  {% if file_type == HydrusFileType.Image %} {# image #}
+  {% if file_type == HydrusFileType.Image %}
     {% include "view-image.njk" %}
-  {% elif file_type == HydrusFileType.Video %} {# video #}
+  {% elif file_type == HydrusFileType.Video %}
     {% include "view-video.njk" %}
-  {% elif file_type == HydrusFileType.Audio %} {# audio #}
+  {% elif file_type == HydrusFileType.Audio %}
     {% include "view-audio.njk" %}
-  {% elif file_type == HydrusFileType.PDF %} {# pdf #}
+  {% elif file_type == HydrusFileType.PDF %}
     {% include "view-pdf.njk" %}
-  {% elif file_type == HydrusFileType.Flash %} {# pdf #}
+  {% elif file_type == HydrusFileType.Flash %}
     {% include "view-flash.njk" %}
-  {% elif file_type == HydrusFileType.TIFF %} {# pdf #}
+  {% elif file_type == HydrusFileType.TIFF %}
     {% include "view-tiff.njk" %}
+  {% elif file_type == HydrusFileType.SVG %}
+    {% include "view-svg.njk" %}
   {% else %}
     {% include "view-unsupported.njk" %}
   {% endif %}
