@@ -32,7 +32,7 @@
     "@nestjs/common": "^9.4.3",
     "@nestjs/core": "^9.4.3",
     "@nestjs/platform-express": "^9.4.3",
-    "@ruffle-rs/ruffle": "^0.1.0-nightly.2023.6.24",
+    "@ruffle-rs/ruffle": "^0.1.0-nightly.2023.7.19",
     "byte-size": "^8.1.1",
     "cache-manager": "^3.6.3",
     "class-transformer": "^0.5.1",
