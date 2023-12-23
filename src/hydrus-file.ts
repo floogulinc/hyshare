@@ -135,6 +135,8 @@ export function type(mime: string): HydrusFileType {
       'image/gif',
       'image/bmp',
       'image/webp',
+      'image/avif',
+      'image/avif-sequence',
     ].includes(mime)
   ) {
     return HydrusFileType.Image;
