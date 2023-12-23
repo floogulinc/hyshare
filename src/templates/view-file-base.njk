@@ -18,7 +18,9 @@
           <h1 class="card-title">{{title}}</h1>
 
           <div>
-            {% if mime %}
+            {% if filetype_human %}
+            <div {% if mime %} title="{{mime}}" {% endif %}>Type: {{filetype_human}}</div>
+            {% elif mime %}
             <div>Type: {{mime}}</div>
             {% endif %}
             {% if width and height %}

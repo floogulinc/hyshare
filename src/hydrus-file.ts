@@ -60,6 +60,22 @@ export interface HydrusTagService {
   display_tags: StatusesToTags;
 }
 
+export enum UrlType {
+  Post = 0,
+  File = 2,
+  Gallery = 3,
+  Watchable = 4,
+  Unknown = 5,
+}
+
+export interface HydrusNotes {
+  [name: string]: string;
+}
+
+interface RatingsFromAPI {
+  [service_key: string]: boolean | number | null;
+}
+
 export interface HydrusFileFromAPI {
   file_id: number;
   hash: string;
@@ -68,36 +84,57 @@ export interface HydrusFileFromAPI {
   ext: string;
   width: number;
   height: number;
+  duration?: number;
   has_audio: boolean;
+  num_frames?: number;
+  num_words?: number;
+
+  // TODO: make non-optional when v540 is minimum
+  filetype_human?: string; // added in v540
+  filetype_enum?: number; //added in v540
+  blurhash?: string; // added in v545
+
   known_urls: string[];
-  detailed_known_urls?: DetailedKnownUrl[];
-  duration?: number | null;
-  num_frames?: number | null;
-  num_words?: number | null;
   file_services: {
     current?: FileFileServices;
     deleted?: FileFileServices;
   };
   time_modified: number;
-
-  // removed in hydrus 514
-  service_names_to_statuses_to_tags?: ServiceNamesToStatusesToTags;
-  service_names_to_statuses_to_display_tags?: ServiceNamesToStatusesToTags;
-
+  service_names_to_statuses_to_tags?: ServiceNamesToStatusesToTags; // removed in v514
+  service_names_to_statuses_to_display_tags?: ServiceNamesToStatusesToTags; // removed in v514
   service_keys_to_statuses_to_tags?: ServiceNamesToStatusesToTags;
   service_keys_to_statuses_to_display_tags?: ServiceNamesToStatusesToTags;
-
-  tags: {
-    [serviceKey: string]: HydrusTagService;
-  };
-
   is_inbox: boolean;
   is_local: boolean;
   is_trashed: boolean;
-  notes: {
-    [name: string]: string;
+
+  notes?: HydrusNotes;
+
+  // added in v506
+  // all known tags added in v507
+  tags: {
+    [serviceKey: string]: HydrusTagService
   };
+
+  detailed_known_urls?: DetailedKnownUrl[];
+
+  ipfs_multihashes?: Record<string, string>;
+
+  ratings?: RatingsFromAPI;
+
+  has_exif?: boolean; // added in v506
+  has_human_readable_embedded_metadata?: boolean; // added in v506
+  has_icc_profile?: boolean; // added in v506
+  has_transparency?: boolean; // added in v552
+
+  thumbnail_width?: number; // added in v506
+  thumbnail_height?: number; // added in v506
+
+  time_modified_details?: Record<string, number>; // added in v506
+
+  is_deleted?: boolean; // added in v506
 }
+
 
 export enum HydrusFileType {
   Image = 0,
@@ -115,14 +152,6 @@ export enum TagStatus {
   Pending = 1,
   Deleted = 2,
   Petitioned = 3,
-}
-
-export enum UrlType {
-  Post = 0,
-  File = 2,
-  Gallery = 3,
-  Watchable = 4,
-  Unknown = 5,
 }
 
 export function type(mime: string): HydrusFileType {

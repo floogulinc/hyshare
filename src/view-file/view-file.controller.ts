@@ -91,6 +91,7 @@ export class ViewFileController {
       is_trashed,
       is_local,
       notes,
+      filetype_human,
     } = file;
 
     if (!file_id || (this.appConfig.errorNonLocal && !is_local)) {
@@ -156,6 +157,7 @@ export class ViewFileController {
       tag_services_to_tags,
       file_type,
       title,
+      filetype_human,
     };
   }
 
