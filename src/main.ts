@@ -80,12 +80,12 @@ async function bootstrap() {
 
   app.useStaticAssets(join(__dirname, '../node_modules/@ruffle-rs/ruffle'), {
     maxAge: '1d',
-    prefix: '/ruffle/',
+    prefix: '/static/ruffle/',
   });
 
   app.useStaticAssets(join(__dirname, '../node_modules/utif'), {
     maxAge: '1d',
-    prefix: '/utif/',
+    prefix: '/static/utif/',
   });
   app.setBaseViewsDir(views);
   app.setViewEngine('njk');
