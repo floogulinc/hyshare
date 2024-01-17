@@ -144,6 +144,7 @@ export enum HydrusFileType {
   PDF = 4,
   TIFF = 5,
   SVG = 6,
+  EPUB = 7,
   Unsupported = 99,
 }
 
@@ -191,6 +192,9 @@ export function type(mime: string): HydrusFileType {
   }
   if (['image/svg+xml'].includes(mime)) {
     return HydrusFileType.SVG;
+  }
+  if (['application/epub+zip'].includes(mime)) {
+    return HydrusFileType.EPUB;
   }
   return HydrusFileType.Unsupported;
 }

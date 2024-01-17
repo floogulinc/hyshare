@@ -1,0 +1,20 @@
+{% extends 'view-file-base.njk' %}
+
+{% block media %}
+ <div
+  id="epub"
+  class="inline-block w-full py-4 min-h-[80vh] object-contain" 
+>
+</div>
+{% endblock %}
+
+{% block endbody %}
+{{ super() }}
+<script src="/static/jszip/jszip.min.js"></script>
+<script src="/static/epubjs/epub.min.js"></script>
+<script>
+  var book = ePub("/file/{{hash}}", {openAs: "epub"});
+  var rendition = book.renderTo("epub", { manager: "continuous", flow: "scrolled", width: "100%", height: "100%" });
+  var displayed = rendition.display();
+</script>
+{% endblock %}

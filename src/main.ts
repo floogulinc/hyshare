@@ -87,6 +87,17 @@ async function bootstrap() {
     maxAge: '1d',
     prefix: '/utif/',
   });
+
+  app.useStaticAssets(join(__dirname, '../node_modules/jszip/dist'), {
+    maxAge: '1d',
+    prefix: '/static/jszip/',
+  });
+
+  app.useStaticAssets(join(__dirname, '../node_modules/epubjs/dist'), {
+    maxAge: '1d',
+    prefix: '/static/epubjs/',
+  });
+
   app.setBaseViewsDir(views);
   app.setViewEngine('njk');
 

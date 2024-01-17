@@ -13,6 +13,8 @@
     {% include "view-tiff.njk" %}
   {% elif file_type == HydrusFileType.SVG %}
     {% include "view-svg.njk" %}
+  {% elif file_type == HydrusFileType.EPUB %}
+    {% include "view-epub.njk" %}
   {% else %}
     {% include "view-unsupported.njk" %}
   {% endif %}
