@@ -94,7 +94,7 @@ Here are the app config items (they are all optional):
 | `searchTags` | `[]` | An array of additional tags to add to each gallery search. Refer to [the Hydrus docs](https://hydrusnetwork.github.io/hydrus/developer_api.html#get_files_search_files) for what can be used here. |
 | `hiddenTags` | `[]` | An array of tags to hide in the file view. |
 | `hiddenNamespaces` | `["hyshare", "hyshare comic"]` | An array of namespaces to hide in the file view. |
-| `tagServiceToSearch` | | The tag service name to use for the gallery search. By default this searches all tag services. It is recommended to use a tag service that is not a public tag repo (eg the PTR) and is not effected by public tag repo siblings and parents. If the tag service used can be effected by PTR parents or siblings someone could potentially sibling or parent a `hyshare:` tag to something else and expose your files. |
+| `tagServiceToSearch` | | The tag service name to use for the gallery search. By default this searches all tag services. It is recommended to use a tag service that is not a public tag repo (eg the PTR) and is not affected by public tag repo siblings and parents. If the tag service used can be effected by PTR parents or siblings someone could potentially sibling or parent a `hyshare:` tag to something else and expose your files. |
 | `tagServicesToDisplay` | `["all known tags"]` | An array of tag service names to display in the file view |
 | `fileServiceToSearch` | | The file service name to use for the gallery search. |
 | `showNotes` | `true` | A boolean indicating whether to show notes on the file view |
