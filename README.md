@@ -190,7 +190,7 @@ Finally, you can even just serve hyshare over HTTP if using Tailscale since Tail
 
 This is what I personally use. It allows you to share your hyshare server with the internet without port forwarding. This works by having the Cloudflare daemon running on your machine which will receive any requests to the Cloudflare domain/subdomain you have pointed to it. This will require you have a domain set up with Cloudflare. 
 
-I suggest following their documentation for [running as a service](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/run-tunnel/as-a-service/).
+I suggest following their documentation for [running as a service](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/as-a-service).
 
 As an example, my `config.yml` file looks like:
 ```yaml
