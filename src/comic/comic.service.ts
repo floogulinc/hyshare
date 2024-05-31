@@ -112,9 +112,11 @@ export class ComicService {
     this.logger.debug(`Comic cache MISS (${id})`);
     const pages = await firstValueFrom(this.getComicPagesFromApi(id));
     const title =
-      this.appConfig.comicTitleFromNamespace && pages[0]
-        ? this.getTitle(pages[0]) ?? id
-        : id;
+      this.appConfig.comicTitleOverrides && this.appConfig.comicTitleOverrides.hasOwnProperty(id)
+        ? this.appConfig.comicTitleOverrides[id]
+        : this.appConfig.comicTitleFromNamespace && pages[0]
+          ? this.getTitle(pages[0]) ?? id
+          : id;
     const comicFromApi = {
       title,
       pages,

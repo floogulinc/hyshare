@@ -196,4 +196,8 @@ export class AppConfig {
   @IsString()
   @IsOptional()
   public readonly comicThumbAspectRatio?: string;
+
+  @IsObject()
+  @IsOptional()
+  public readonly comicTitleOverrides?: Record<string, string>;
 }
