@@ -2,6 +2,7 @@ import {
   CacheInterceptor,
   Controller,
   Get,
+  Header,
   NotFoundException,
   Param,
   Redirect,
@@ -114,6 +115,7 @@ export class GalleryController {
 
   @Get(':tag/random')
   @Redirect()
+  @Header('Cache-Control', 'no-cache')
   @AppConfigToggle('galleryRandomEnabled')
   @UseGuards(ConfigGuard)
   async random(@Param() params: GalleryParams) {
@@ -131,6 +133,7 @@ export class GalleryController {
 
   @Get(':tag/random/file')
   @Redirect()
+  @Header('Cache-Control', 'no-cache')
   @AppConfigToggle('galleryRandomEnabled')
   @UseGuards(ConfigGuard)
   async randomFile(@Param() params: GalleryParams) {
