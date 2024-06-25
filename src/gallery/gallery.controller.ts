@@ -85,9 +85,7 @@ export class GalleryController {
   @AppConfigToggle('galleryDownloadEnabled')
   @UseGuards(ConfigGuard)
   async getGalleryDownload(@Param() params: GalleryParams) {
-    const { hashes } = await firstValueFrom(
-      this.getHashes(params.tag).pipe(retry(2)),
-    );
+    const { hashes } = await firstValueFrom(this.getHashes(params.tag));
     if (hashes.length < 1) {
       throw new NotFoundException();
     }
@@ -119,9 +117,7 @@ export class GalleryController {
   @AppConfigToggle('galleryRandomEnabled')
   @UseGuards(ConfigGuard)
   async random(@Param() params: GalleryParams) {
-    const { hashes } = await firstValueFrom(
-      this.getHashes(params.tag).pipe(retry(2)),
-    );
+    const { hashes } = await firstValueFrom(this.getHashes(params.tag));
     if (hashes.length < 1) {
       throw new NotFoundException();
     }
@@ -137,9 +133,7 @@ export class GalleryController {
   @AppConfigToggle('galleryRandomEnabled')
   @UseGuards(ConfigGuard)
   async randomFile(@Param() params: GalleryParams) {
-    const { hashes } = await firstValueFrom(
-      this.getHashes(params.tag).pipe(retry(2)),
-    );
+    const { hashes } = await firstValueFrom(this.getHashes(params.tag));
     if (hashes.length < 1) {
       throw new NotFoundException();
     }
