@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Redirect,
   Render,
   StreamableFile,
   UseGuards,
@@ -14,8 +15,8 @@ import { firstValueFrom, lastValueFrom, map, retry } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import { parse } from 'content-disposition';
-import { GalleryDownloadGuard } from './gallery-download.guard';
 import { createZipStream } from 'src/create-zip-stream';
+import { AppConfigToggle, ConfigGuard } from 'src/config.guard';
 
 class GalleryParams {
   @IsNotEmpty()
@@ -80,7 +81,8 @@ export class GalleryController {
   }
 
   @Get(':tag/download')
-  @UseGuards(GalleryDownloadGuard)
+  @AppConfigToggle('galleryDownloadEnabled')
+  @UseGuards(ConfigGuard)
   async getGalleryDownload(@Param() params: GalleryParams) {
     const { hashes } = await firstValueFrom(
       this.getHashes(params.tag).pipe(retry(2)),
@@ -108,5 +110,39 @@ export class GalleryController {
       res.statusCode = 500;
       res.send(err.message);
     });
+  }
+
+  @Get(':tag/random')
+  @Redirect()
+  @AppConfigToggle('galleryRandomEnabled')
+  @UseGuards(ConfigGuard)
+  async random(@Param() params: GalleryParams) {
+    const { hashes } = await firstValueFrom(
+      this.getHashes(params.tag).pipe(retry(2)),
+    );
+    if (hashes.length < 1) {
+      throw new NotFoundException();
+    }
+    const hash = hashes[Math.floor(Math.random() * hashes.length)];
+    return {
+      url: `/view/${hash}`,
+    };
+  }
+
+  @Get(':tag/random/file')
+  @Redirect()
+  @AppConfigToggle('galleryRandomEnabled')
+  @UseGuards(ConfigGuard)
+  async randomFile(@Param() params: GalleryParams) {
+    const { hashes } = await firstValueFrom(
+      this.getHashes(params.tag).pipe(retry(2)),
+    );
+    if (hashes.length < 1) {
+      throw new NotFoundException();
+    }
+    const hash = hashes[Math.floor(Math.random() * hashes.length)];
+    return {
+      url: `/file/${hash}`,
+    };
   }
 }

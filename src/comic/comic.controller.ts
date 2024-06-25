@@ -23,8 +23,8 @@ import { HydrusFileType, type } from 'src/hydrus-file';
 import { ComicPage, ComicPageIndentifier } from './comic';
 import { ComicService } from './comic.service';
 import { Transform } from 'class-transformer';
-import { ComicGuard } from './comic.guard';
 import { BlockedHashGuard } from 'src/blocked-hash.guard';
+import { AppConfigToggle, ConfigGuard } from 'src/config.guard';
 
 class ComicParams {
   @IsNotEmpty()
@@ -59,7 +59,8 @@ class ComicPageQuery implements ComicPageIndentifier {
 }
 
 @Controller('comic')
-@UseGuards(ComicGuard)
+@AppConfigToggle('comicsEnabled')
+@UseGuards(ConfigGuard)
 export class ComicController {
   constructor(
     private readonly hydrusApiService: HydrusApiService,
