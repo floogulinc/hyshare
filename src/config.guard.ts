@@ -4,7 +4,6 @@ import {
   Injectable,
   SetMetadata,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { AppConfig } from './config';
 import { Reflector } from '@nestjs/core';
 import { ConditionalKeys } from 'type-fest';
@@ -18,16 +17,21 @@ export const AppConfigToggle = (configEntry: AppConfigBooleanKeys) =>
 export class ConfigGuard implements CanActivate {
   constructor(private appConfig: AppConfig, private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const configEntry = this.reflector.get<AppConfigBooleanKeys>(
+  canActivate(context: ExecutionContext) {
+    const configEntryHandler = this.reflector.get<AppConfigBooleanKeys>(
       'appconfigtoggle',
       context.getHandler(),
     );
-    if (!configEntry) {
-      return false;
+    if (configEntryHandler in this.appConfig) {
+      return this.appConfig[configEntryHandler];
     }
-    return this.appConfig[configEntry];
+    const configEntryClass = this.reflector.get<AppConfigBooleanKeys>(
+      'appconfigtoggle',
+      context.getClass(),
+    );
+    if (configEntryClass in this.appConfig) {
+      return this.appConfig[configEntryClass];
+    }
+    return false;
   }
 }
