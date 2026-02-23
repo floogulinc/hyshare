@@ -166,6 +166,11 @@ export function type(mime: string): HydrusFileType {
       'image/webp',
       'image/avif',
       'image/avif-sequence',
+      'image/jxl',
+      'image/heic',
+      'image/heic-sequence',
+      'image/heif',
+      'image/heif-sequence',
     ].includes(mime)
   ) {
     return HydrusFileType.Image;
