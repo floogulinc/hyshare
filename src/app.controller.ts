@@ -117,6 +117,15 @@ export class AppController {
     }
   }
 
+  // fake Mastodon endpoint
+  @Get('api/v1/instance')
+  async getInstance() {
+    return {
+      title: 'hyshare',
+      version: 'hyshare',
+    };
+  }
+
   @Get(':path')
   @Redirect()
   redirects(@Param('path') path: string) {

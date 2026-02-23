@@ -11,13 +11,13 @@ import {
 import { IsHash } from 'class-validator';
 import { map, retry } from 'rxjs';
 import { BlockedHashGuard } from 'src/blocked-hash.guard';
-import { AppConfig } from 'src/config';
+import { AppConfig, EnvConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import {
+  fileTypeToMastodonFiletype,
   HydrusFileFromAPI,
   HydrusFileType,
   serviceNamesToCurrentTags,
-  ServiceNamesToStatusesToTags,
   type,
 } from 'src/hydrus-file';
 import {
@@ -30,11 +30,12 @@ class ViewFilesParams {
   @IsHash('sha256')
   hash: string;
 }
-@Controller('view')
+@Controller()
 export class ViewFileController {
   constructor(
     private readonly hydrusApiService: HydrusApiService,
     private appConfig: AppConfig,
+    private envConfig: EnvConfig,
   ) {}
 
   getTags(file: HydrusFileFromAPI) {
@@ -163,7 +164,7 @@ export class ViewFileController {
     };
   }
 
-  @Get(':hash')
+  @Get('view/:hash')
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   @Render('view-file')
@@ -171,18 +172,43 @@ export class ViewFileController {
     return this.getFileData(params.hash);
   }
 
-  @Get(':hash/data.json')
+  @Get('view/:hash/data.json')
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   getGalleryData(@Param() params: ViewFilesParams) {
     return this.getFileData(params.hash);
   }
 
-  @Get(':hash/embed-video')
+  @Get('view/:hash/embed-video')
   @UseGuards(BlockedHashGuard)
   @UseInterceptors(CacheInterceptor)
   @Render('embed-video')
   getEmbedVideo(@Param() params: ViewFilesParams) {
     return params;
+  }
+
+  @Get('api/v1/statuses/:hash')
+  @UseGuards(BlockedHashGuard)
+  @UseInterceptors(CacheInterceptor)
+  getStatus(@Param() params: ViewFilesParams) {
+    return this.getFileData(params.hash).pipe(
+      map((file) => ({
+        account: {
+          username: '',
+          url: this.envConfig.HYSHARE_BASE_URL ?? '',
+        },
+        url: `${this.envConfig.HYSHARE_BASE_URL ?? ''}/view/${params.hash}`,
+        content: file.title,
+        media_attachments: [
+          {
+            id: file.hash,
+            url: `${this.envConfig.HYSHARE_BASE_URL ?? ''}/file/${params.hash}`,
+            preview_url: `${this.envConfig.HYSHARE_BASE_URL ?? ''}/thumbnail/${params.hash}`,
+            blurhash: file.blurhash,
+            type: fileTypeToMastodonFiletype(file.file_type),
+          },
+        ],
+      })),
+    );
   }
 }

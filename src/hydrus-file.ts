@@ -227,3 +227,16 @@ export function serviceNamesToCurrentTags(
     );
   }
 }
+
+export function fileTypeToMastodonFiletype(file_type: HydrusFileType) {
+  switch (file_type) {
+    case HydrusFileType.Image:
+      return 'image';
+    case HydrusFileType.Video:
+      return 'video';
+    case HydrusFileType.Audio:
+      return 'audio';
+    default:
+      return 'unknown';
+  }
+}
