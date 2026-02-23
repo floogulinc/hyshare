@@ -92,6 +92,7 @@ export class ViewFileController {
       is_local,
       notes,
       filetype_human,
+      blurhash,
     } = file;
 
     if (!file_id || (this.appConfig.errorNonLocal && !is_local)) {
@@ -158,6 +159,7 @@ export class ViewFileController {
       file_type,
       title,
       filetype_human,
+      blurhash,
     };
   }
 
