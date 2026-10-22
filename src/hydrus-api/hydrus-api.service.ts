@@ -5,7 +5,7 @@ import { map, Observable } from 'rxjs';
 import { EnvConfig } from '../config';
 import { HydrusFileFromAPI } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-sort-type';
-import { IncomingMessage } from 'http';
+import { IncomingHttpHeaders, IncomingMessage } from 'http';
 
 @Injectable()
 export class HydrusApiService {
@@ -135,18 +135,26 @@ export class HydrusApiService {
     );
   }
 
-  public getThumbnailStream(hash: string, headers?) {
+  private getStreamHeaders(headers: IncomingHttpHeaders) {
+    const upstreamHeaders: Record<string, string> = { ...this.headers };
+    if (typeof headers.range === 'string') {
+      upstreamHeaders.range = headers.range;
+    }
+    return upstreamHeaders;
+  }
+
+  public getThumbnailStream(hash: string, headers: IncomingHttpHeaders = {}) {
     return this.http.get<IncomingMessage>(this.apiUrl + 'get_files/thumbnail', {
       params: { hash },
-      headers: { ...headers, ...this.headers },
+      headers: this.getStreamHeaders(headers),
       responseType: 'stream',
     });
   }
 
-  public getFileStream(hash: string, headers?) {
+  public getFileStream(hash: string, headers: IncomingHttpHeaders = {}) {
     return this.http.get<IncomingMessage>(this.apiUrl + 'get_files/file', {
       params: { hash },
-      headers: { ...headers, ...this.headers },
+      headers: this.getStreamHeaders(headers),
       responseType: 'stream',
     });
   }
