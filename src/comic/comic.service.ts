@@ -50,8 +50,9 @@ export class ComicService {
 
   getTitle(page: ComicPage) {
     const tags = this.getFlatTags(page);
-
-    return getTagValue(firstNamespaceTag(tags, 'title'));
+    return getTagValue(
+      firstNamespaceTag(tags, this.appConfig.comicTitleNamespace)
+    );
   }
 
   collator = new Intl.Collator(undefined, {
