@@ -51,7 +51,7 @@ export class ComicService {
   getTitle(page: ComicPage) {
     const tags = this.getFlatTags(page);
     return getTagValue(
-      firstNamespaceTag(tags, this.appConfig.comicTitleNamespace)
+      firstNamespaceTag(tags, this.appConfig.comicTitleNamespace),
     );
   }
 
@@ -89,7 +89,12 @@ export class ComicService {
         },
       )
       .pipe(
-        switchMap(({ hashes }) =>
+        map(({ hashes }) =>
+          hashes.filter(
+            (hash) => !this.appConfig.blockedHashes.includes(hash),
+          ),
+        ),
+        switchMap((hashes) =>
           hashes.length > 0
             ? this.hydrusApiService.getFileMetadata({
                 hashes,
@@ -113,11 +118,12 @@ export class ComicService {
     this.logger.debug(`Comic cache MISS (${id})`);
     const pages = await firstValueFrom(this.getComicPagesFromApi(id));
     const title =
-      this.appConfig.comicTitleOverrides && this.appConfig.comicTitleOverrides.hasOwnProperty(id)
+      this.appConfig.comicTitleOverrides &&
+      this.appConfig.comicTitleOverrides.hasOwnProperty(id)
         ? this.appConfig.comicTitleOverrides[id]
         : this.appConfig.comicTitleFromNamespace && pages[0]
-          ? this.getTitle(pages[0]) ?? id
-          : id;
+        ? this.getTitle(pages[0]) ?? id
+        : id;
     const comicFromApi = {
       title,
       pages,

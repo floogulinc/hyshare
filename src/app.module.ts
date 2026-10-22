@@ -10,7 +10,7 @@ import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { GalleryController } from './gallery/gallery.controller';
 import { ViewFileController } from './view-file/view-file.controller';
 import { dotenvLoader, fileLoader, TypedConfigModule } from 'nest-typed-config';
-import { AppConfig, EnvConfig } from './config';
+import { AppConfig, EnvConfig, normalizeAppConfig } from './config';
 import { getCacheControlMiddleware } from './cache-control.middleware';
 import { ComicController } from './comic/comic.controller';
 import { ComicService } from './comic/comic.service';
@@ -43,6 +43,7 @@ import { ComicService } from './comic/comic.service';
     }),
     TypedConfigModule.forRoot({
       schema: AppConfig,
+      normalize: normalizeAppConfig,
       load: [
         fileLoader({
           basename: '.hyshare',

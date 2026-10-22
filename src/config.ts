@@ -17,6 +17,15 @@ import {
 import { UrlType } from 'src/hydrus-file';
 import { HydrusSortType } from './hydrus-api/hydrus-sort-type';
 
+export function normalizeAppConfig(config: Record<string, unknown>) {
+  if (Array.isArray(config.blockedHashes)) {
+    config.blockedHashes = config.blockedHashes.map((hash) =>
+      typeof hash === 'string' ? hash.toLowerCase() : hash,
+    );
+  }
+  return config;
+}
+
 export class EnvConfig {
   @IsString()
   @IsPort()
