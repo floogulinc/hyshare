@@ -10,14 +10,17 @@ import {
   StreamableFile,
   UseGuards,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { IsNotEmpty, IsString, Matches, NotContains } from 'class-validator';
 import { firstValueFrom, lastValueFrom, map, retry } from 'rxjs';
+import { Response } from 'express';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import { parse } from 'content-disposition';
 import { createZipStream } from 'src/create-zip-stream';
 import { AppConfigToggle, ConfigGuard } from 'src/config.guard';
+import { handleStreamError } from 'src/stream-error-handler';
 
 class GalleryParams {
   @IsNotEmpty()
@@ -76,18 +79,29 @@ export class GalleryController {
     const file = await lastValueFrom(
       this.hydrusApiService.getFileStream(hash).pipe(retry(2)),
     );
-    const filename = parse(file.headers['content-disposition']).parameters
-      .filename as string;
-    return { stream: file.data, name: filename };
+    try {
+      const filename = parse(file.headers['content-disposition']).parameters
+        .filename as string;
+      return { stream: file.data, name: filename };
+    } catch (error) {
+      file.data.destroy();
+      throw error;
+    }
   }
 
   @Get(':tag/download')
   @AppConfigToggle('galleryDownloadEnabled')
   @UseGuards(ConfigGuard)
-  async getGalleryDownload(@Param() params: GalleryParams) {
+  async getGalleryDownload(
+    @Param() params: GalleryParams,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const { hashes } = await firstValueFrom(this.getHashes(params.tag));
     if (hashes.length < 1) {
       throw new NotFoundException();
+    }
+    if (res.destroyed) {
+      return;
     }
     const filePromises = hashes.map((hash) => () => this.filePromise(hash));
     const archive = createZipStream(filePromises, { store: true });
@@ -95,20 +109,7 @@ export class GalleryController {
     return new StreamableFile(archive, {
       type: 'application/zip',
       disposition: `attachment; filename="${params.tag}.zip"`,
-    }).setErrorHandler((err, res) => {
-      // see https://github.com/nestjs/nest/issues/10681
-      // and https://github.com/nestjs/nest/pull/10895
-
-      if (res.destroyed) {
-        return;
-      }
-      if ((res as any).headersSent) {
-        (res as any).end();
-        return;
-      }
-      res.statusCode = 500;
-      res.send(err.message);
-    });
+    }).setErrorHandler(handleStreamError);
   }
 
   @Get(':tag/random')

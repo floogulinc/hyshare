@@ -12,6 +12,7 @@ import {
   HttpException,
   Redirect,
   NotFoundException,
+  StreamableFile,
 } from '@nestjs/common';
 import { HydrusApiService } from './hydrus-api/hydrus-api.service';
 import { Request, Response } from 'express';
@@ -20,8 +21,12 @@ import ms from 'ms';
 import { BlockedHashGuard } from './blocked-hash.guard';
 import { join } from 'path';
 import { stat } from 'fs/promises';
+import { createReadStream } from 'fs';
 import { AppConfig, EnvConfig } from './config';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
+import { AxiosResponse } from 'axios';
+import { IncomingMessage } from 'http';
+import { handleStreamError } from './stream-error-handler';
 
 class FileParams {
   @IsHash('sha256')
@@ -51,7 +56,7 @@ export class AppController {
   async getThumbnail(
     @Param() params: FileParams,
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { hash } = params;
     if (this.env.HYSHARE_THUMBNAIL_DIR) {
@@ -60,30 +65,21 @@ export class AppController {
       try {
         const statResult = await stat(path);
         if (statResult.isFile()) {
-          res.sendFile(path, { maxAge: '1y' });
-          return;
+          if (res.destroyed) {
+            return;
+          }
+          res.setHeader('Cache-Control', 'public, max-age=31536000');
+          return new StreamableFile(createReadStream(path), {
+            length: statResult.size,
+          }).setErrorHandler(handleStreamError);
         }
       } catch {}
     }
-    try {
-      const thumb = await lastValueFrom(
-        this.hydrusApiService.getThumbnailStream(hash, req.headers),
-      );
-      res
-        .status(thumb.status)
-        .header(thumb.headers)
-        .setHeader('Cache-Control', `public, max-age=${oneYearSeconds}`);
-      thumb.data.pipe(res);
-    } catch (error) {
-      if (error.response) {
-        throw new HttpException(
-          error.response.statusText,
-          error.response.status,
-        );
-      } else {
-        throw error;
-      }
-    }
+    return this.streamResponse(
+      res,
+      () => this.hydrusApiService.getThumbnailStream(hash, req.headers),
+      { 'Cache-Control': `public, max-age=${oneYearSeconds}` },
+    );
   }
 
   @Get('file/:hash')
@@ -91,21 +87,38 @@ export class AppController {
   async getFile(
     @Param() params: FileParams,
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
+    return this.streamResponse(
+      res,
+      () => this.hydrusApiService.getFileStream(params.hash, req.headers),
+      { 'Cache-Control': `public, max-age=${oneYearSeconds}, immutable` },
+    );
+  }
+
+  private async streamResponse(
+    res: Response,
+    fetch: () => Observable<AxiosResponse<IncomingMessage>>,
+    headers: Record<string, string | string[] | number>,
+  ) {
+    let source: IncomingMessage;
     try {
-      const file = await lastValueFrom(
-        this.hydrusApiService.getFileStream(params.hash, req.headers),
-      );
-      res
-        .status(file.status)
-        .header(file.headers)
-        .setHeader(
-          'Cache-Control',
-          `public, max-age=${oneYearSeconds}, immutable`,
-        );
-      file.data.pipe(res);
+      if (res.destroyed) {
+        return;
+      }
+      const file = await lastValueFrom(fetch());
+      source = file.data;
+      if (res.destroyed) {
+        source.destroy();
+        return;
+      }
+      res.status(file.status).header(file.headers).header(headers);
+      return new StreamableFile(source).setErrorHandler(handleStreamError);
     } catch (error) {
+      source?.destroy();
+      if (res.destroyed) {
+        return;
+      }
       if (error.response) {
         throw new HttpException(
           error.response.statusText,

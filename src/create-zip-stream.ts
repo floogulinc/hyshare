@@ -1,6 +1,6 @@
 // from https://github.com/ladeiko/async-zip-stream
 
-import Packer from 'zip-stream';
+import Packer, { ZipStreamOptions } from 'zip-stream';
 import { Readable } from 'stream';
 
 export type AsyncEntry = () => Promise<{
@@ -10,34 +10,51 @@ export type AsyncEntry = () => Promise<{
 
 export function createZipStream(
   entries: AsyncEntry[],
-  options?: any | undefined,
+  options?: ZipStreamOptions,
 ): Readable {
-  const clonedEntries = entries.map((e) => e);
   const archive = new Packer(options); // see https://www.archiverjs.com/zipstream/ options
+  let source: Readable | undefined;
+  const cleanup = () => {
+    source?.destroy();
+    source = undefined;
+  };
+  archive.once('close', cleanup);
+  archive.once('error', cleanup);
 
-  const step = async () => {
-    if (clonedEntries.length === 0) {
-      archive.finish();
-      return;
-    }
-
-    const entryFun: AsyncEntry = clonedEntries.shift()!;
+  const appendEntries = async () => {
     try {
-      const entry = await entryFun();
-      const source = entry.stream;
-      archive.entry(source, { name: entry.name }, (err: Error, entry: any) => {
-        if (err) {
-          archive.emit('error', err);
+      for (const getEntry of entries) {
+        if (archive.destroyed) {
           return;
         }
-        step();
-      });
+        const entry = await getEntry();
+        source = entry.stream;
+        if (archive.destroyed) {
+          source.destroy();
+          return;
+        }
+        await new Promise<void>((resolve, reject) => {
+          entry.stream.once('error', reject);
+          archive.entry(entry.stream, { name: entry.name }, (error) => {
+            entry.stream.removeListener('error', reject);
+            if (error) reject(error);
+            else resolve();
+          });
+        });
+        source = undefined;
+      }
+      if (!archive.destroyed) {
+        archive.finalize();
+      }
     } catch (e) {
-      archive.emit('error', e);
+      if (!archive.destroyed) {
+        archive.destroy(e);
+      }
     }
   };
 
-  step();
+  // Let the caller attach its pipeline/error handler before starting entries.
+  setImmediate(() => void appendEntries());
 
   return archive;
 }
