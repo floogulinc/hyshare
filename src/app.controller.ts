@@ -92,7 +92,10 @@ export class AppController {
     return this.streamResponse(
       res,
       () => this.hydrusApiService.getFileStream(params.hash, req.headers),
-      { 'Cache-Control': `public, max-age=${oneYearSeconds}, immutable` },
+      {
+        'Cache-Control': `public, max-age=${oneYearSeconds}, immutable`,
+        'Content-Security-Policy': 'sandbox',
+      },
     );
   }
 
