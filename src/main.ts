@@ -25,7 +25,9 @@ async function bootstrap() {
   const logger = new Logger();
   logger.log(`Starting in ${__dirname}`);
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bodyParser: false,
+  });
   const express = app.getHttpAdapter().getInstance();
 
   app.use(helmet.crossOriginOpenerPolicy());
