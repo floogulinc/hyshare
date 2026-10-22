@@ -9,7 +9,12 @@ import { Cache } from 'cache-manager';
 import { firstValueFrom, map, Observable, of, switchMap } from 'rxjs';
 import { AppConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
-import { HydrusFileFromAPI, serviceNamesToCurrentTags } from 'src/hydrus-file';
+import {
+  HydrusFileFromAPI,
+  HydrusFileType,
+  serviceNamesToCurrentTags,
+  type,
+} from 'src/hydrus-file';
 import {
   firstNamespaceTag,
   flattenTagServices,
@@ -103,7 +108,10 @@ export class ComicService {
             : of({ metadata: [] }),
         ),
         map(({ metadata }) =>
-          metadata.map((p) => this.processComicPage(p)).filter((p) => !!p.page),
+          metadata
+            .filter((file) => type(file.mime) === HydrusFileType.Image)
+            .map((p) => this.processComicPage(p))
+            .filter((p) => !!p.page),
         ),
         map((pages) => this.sortPages(pages)),
       );
