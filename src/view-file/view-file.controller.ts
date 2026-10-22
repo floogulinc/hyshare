@@ -87,11 +87,11 @@ export class ViewFileController {
       has_audio,
       file_services,
       time_modified,
-      detailed_known_urls,
+      detailed_known_urls = [],
       is_inbox,
       is_trashed,
       is_local,
-      notes,
+      notes = {},
       filetype_human,
       blurhash,
     } = file;
