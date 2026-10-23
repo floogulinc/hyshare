@@ -14,7 +14,6 @@ import { BlockedHashGuard } from 'src/blocked-hash.guard';
 import { AppConfig, EnvConfig } from 'src/config';
 import { HydrusApiService } from 'src/hydrus-api/hydrus-api.service';
 import {
-  fileTypeToMastodonFiletype,
   HydrusFileFromAPI,
   HydrusFileType,
   serviceNamesToCurrentTags,
@@ -185,30 +184,5 @@ export class ViewFileController {
   @Render('embed-video')
   getEmbedVideo(@Param() params: ViewFilesParams) {
     return params;
-  }
-
-  @Get('api/v1/statuses/:hash')
-  @UseGuards(BlockedHashGuard)
-  @UseInterceptors(CacheInterceptor)
-  getStatus(@Param() params: ViewFilesParams) {
-    return this.getFileData(params.hash).pipe(
-      map((file) => ({
-        account: {
-          username: '',
-          url: this.envConfig.HYSHARE_BASE_URL ?? '',
-        },
-        url: `${this.envConfig.HYSHARE_BASE_URL ?? ''}/view/${params.hash}`,
-        content: file.title,
-        media_attachments: [
-          {
-            id: file.hash,
-            url: `${this.envConfig.HYSHARE_BASE_URL ?? ''}/file/${params.hash}`,
-            preview_url: `${this.envConfig.HYSHARE_BASE_URL ?? ''}/thumbnail/${params.hash}`,
-            blurhash: file.blurhash,
-            type: fileTypeToMastodonFiletype(file.file_type),
-          },
-        ],
-      })),
-    );
   }
 }

@@ -113,7 +113,7 @@ export interface HydrusFileFromAPI {
   // added in v506
   // all known tags added in v507
   tags: {
-    [serviceKey: string]: HydrusTagService
+    [serviceKey: string]: HydrusTagService;
   };
 
   detailed_known_urls?: DetailedKnownUrl[];
@@ -134,7 +134,6 @@ export interface HydrusFileFromAPI {
 
   is_deleted?: boolean; // added in v506
 }
-
 
 export enum HydrusFileType {
   Image = 0,
@@ -225,18 +224,5 @@ export function serviceNamesToCurrentTags(
         value[0],
       ]),
     );
-  }
-}
-
-export function fileTypeToMastodonFiletype(file_type: HydrusFileType) {
-  switch (file_type) {
-    case HydrusFileType.Image:
-      return 'image';
-    case HydrusFileType.Video:
-      return 'video';
-    case HydrusFileType.Audio:
-      return 'audio';
-    default:
-      return 'unknown';
   }
 }

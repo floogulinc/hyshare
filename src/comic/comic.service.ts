@@ -95,9 +95,7 @@ export class ComicService {
       )
       .pipe(
         map(({ hashes }) =>
-          hashes.filter(
-            (hash) => !this.appConfig.blockedHashes.includes(hash),
-          ),
+          hashes.filter((hash) => !this.appConfig.blockedHashes.includes(hash)),
         ),
         switchMap((hashes) =>
           hashes.length > 0

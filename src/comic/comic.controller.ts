@@ -153,5 +153,4 @@ export class ComicController {
   getPage(@Param() params: ComicPageParams) {
     return this.pageData(params.id, params.hash);
   }
-  
 }
