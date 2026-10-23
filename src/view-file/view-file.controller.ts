@@ -125,11 +125,18 @@ export class ViewFileController {
     const firstImportTime =
       importTimes.length > 0 ? Math.min(...importTimes) : undefined;
 
-    const filteredUrls = detailed_known_urls.filter(
-      ({ match_name, url_type }) =>
-        this.appConfig.urlTypesToDisplay.includes(url_type) &&
-        !this.appConfig.hiddenUrlClassNames.includes(match_name),
-    );
+    const filteredUrls = detailed_known_urls
+      .filter(
+        ({ match_name, url_type }) =>
+          this.appConfig.urlTypesToDisplay.includes(url_type) &&
+          !this.appConfig.hiddenUrlClassNames.includes(match_name),
+      )
+      .map(({ normalised_url, url_type, url_type_string, match_name }) => ({
+        normalised_url,
+        url_type,
+        url_type_string,
+        match_name,
+      }));
 
     const filteredNotes = Object.fromEntries(
       Object.entries(notes).filter(

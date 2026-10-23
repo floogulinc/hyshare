@@ -45,6 +45,7 @@ export interface DetailedKnownUrl {
   url_type_string: string;
   match_name: string;
   can_parse: boolean;
+  cannot_parse_reason?: string;
 }
 
 export type HydrusTagServiceType =
